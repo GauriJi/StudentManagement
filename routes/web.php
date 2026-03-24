@@ -190,6 +190,19 @@ Route::group(['middleware' => 'auth'], function () {
 
 });
 
+/************************ ADMIN ****************************/
+Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function () {
+    Route::get('/dashboard',   'AdminController@dashboard')->name('admin.dashboard');
+
+    // Academic Calendar
+    Route::get('/calendar',             'AcademicCalendarController@index')->name('admin.calendar');
+    Route::post('/calendar',            'AcademicCalendarController@store')->name('admin.calendar.store');
+    Route::delete('/calendar/{id}',     'AcademicCalendarController@destroy')->name('admin.calendar.destroy');
+
+    // Substitution
+    Route::get('/substitution',  'SubstitutionController@index')->name('admin.substitution');
+});
+
 /************************ SUPER ADMIN ****************************/
 Route::group(['namespace' => 'SuperAdmin','middleware' => 'super_admin', 'prefix' => 'super_admin'], function(){
 

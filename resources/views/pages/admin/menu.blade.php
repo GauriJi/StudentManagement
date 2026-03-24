@@ -1,0 +1,90 @@
+{{-- Dashboard --}}
+<li class="nav-item">
+    <a href="{{ route('admin.dashboard') }}" class="nav-link {{ Route::is('admin.dashboard') ? 'active' : '' }}">
+        <i class="icon-home4"></i><span>Dashboard</span>
+    </a>
+</li>
+
+{{-- Academic Calendar --}}
+<li class="nav-item">
+    <a href="{{ route('admin.calendar') }}" class="nav-link {{ Route::is('admin.calendar') ? 'active' : '' }}">
+        <i class="icon-calendar3"></i><span>Academic Calendar</span>
+    </a>
+</li>
+
+{{-- Timetable --}}
+<li class="nav-item">
+    <a href="{{ route('tt.index') }}" class="nav-link {{ Route::is('tt.*') ? 'active' : '' }}">
+        <i class="icon-table2"></i><span>Timetable</span>
+    </a>
+</li>
+
+{{-- Substitution --}}
+<li class="nav-item">
+    <a href="{{ route('admin.substitution') }}" class="nav-link {{ Route::is('admin.substitution') ? 'active' : '' }}">
+        <i class="icon-shuffle"></i><span>Substitution</span>
+    </a>
+</li>
+
+{{-- Assignments --}}
+<li class="nav-item">
+    <a href="{{ route('assignments.index') }}" class="nav-link {{ Route::is('assignments.*') ? 'active' : '' }}">
+        <i class="icon-book2"></i><span>Assignments</span>
+    </a>
+</li>
+
+{{-- Attendance --}}
+<li class="nav-item">
+    <a href="{{ route('attendance.index') }}" class="nav-link {{ Route::is('attendance.*') ? 'active' : '' }}">
+        <i class="icon-calendar-check"></i><span>Attendance</span>
+    </a>
+</li>
+
+{{-- Study Materials --}}
+<li class="nav-item">
+    <a href="{{ route('study_materials.index') }}" class="nav-link {{ Route::is('study_materials.*') ? 'active' : '' }}">
+        <i class="icon-file-pdf"></i><span>Study Materials</span>
+    </a>
+</li>
+
+{{-- Fees & Dues --}}
+<li class="nav-item">
+    <a href="{{ route('payments.manage') }}" class="nav-link {{ Route::is('payments.*') ? 'active' : '' }}">
+        <i class="icon-wallet"></i><span>Fees & Dues</span>
+    </a>
+</li>
+
+{{-- Dormitory --}}
+<li class="nav-item">
+    <a href="{{ route('dorms.index') }}" class="nav-link {{ Route::is('dorms.*') ? 'active' : '' }}">
+        <i class="icon-office"></i><span>Dormitory</span>
+    </a>
+</li>
+
+{{-- Classes & Sections --}}
+<li class="nav-item">
+    <a href="{{ route('classes.index') }}" class="nav-link {{ Route::is('classes.*') || Route::is('sections.*') ? 'active' : '' }}">
+        <i class="icon-stack2"></i><span>Classes & Sections</span>
+    </a>
+</li>
+
+{{-- Subjects --}}
+<li class="nav-item">
+    <a href="{{ route('subjects.index') }}" class="nav-link {{ Route::is('subjects.*') ? 'active' : '' }}">
+        <i class="icon-books2"></i><span>Subjects</span>
+    </a>
+</li>
+
+{{-- Teachers --}}
+<li class="nav-item">
+    <a href="{{ route('users.index') }}" class="nav-link {{ Route::is('users.*') ? 'active' : '' }}">
+        <i class="icon-users4"></i><span>Teachers & Users</span>
+    </a>
+</li>
+
+{{-- Exams & Results --}}
+<li class="nav-item">
+    <a href="{{ route('exams.index') }}" class="nav-link {{ Route::is('exams.*') || Route::is('marks.*') ? 'active' : '' }}">
+        <i class="icon-pencil5"></i><span>Exams & Results</span>
+    </a>
+</li>

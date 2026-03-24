@@ -51,6 +51,9 @@ class HomeController extends Controller
         if(Qs::userIsParent()){
             return redirect()->route('parent.dashboard');
         }
+        if(Auth::user()->user_type === 'admin'){
+            return redirect()->route('admin.dashboard');
+        }
         if(Auth::user()->user_type === 'accountant'){
             return redirect()->route('accountant.dashboard');
         }
