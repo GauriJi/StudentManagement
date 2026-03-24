@@ -169,6 +169,27 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('get_class_subjects/{class_id}', 'AjaxController@get_class_subjects')->name('get_class_subjects');
     });
 
+    /************************ STUDENT ****************************/
+    Route::group(['prefix' => 'student', 'namespace' => 'Student', 'middleware' => 'student'], function(){
+        Route::get('/dashboard', 'StudentController@dashboard')->name('student.dashboard');
+        Route::get('/attendance', 'StudentController@attendance')->name('student.attendance');
+        Route::get('/exams', 'StudentController@exams')->name('student.exams');
+        Route::get('/notes', 'StudentController@notes')->name('student.notes');
+        Route::get('/assignments', 'StudentController@assignments')->name('student.assignments');
+        Route::get('/timetable', 'StudentController@timetable')->name('student.timetable');
+        Route::get('/progress', 'StudentController@progress')->name('student.progress');
+        
+        Route::get('/chat', 'StudentController@chatIndex')->name('student.chat.index');
+        Route::get('/chat/{id}', 'StudentController@chat')->name('student.chat');
+        Route::post('/chat/{id}', 'StudentController@sendMessage')->name('student.chat.send');
+        
+        Route::get('/doubts', 'StudentController@doubts')->name('student.doubts');
+        Route::post('/doubts', 'StudentController@storeDoubt')->name('student.doubts.store');
+
+        Route::get('/notifications', 'StudentController@notifications')->name('student.notifications');
+        Route::post('/notifications/mark-read', 'StudentController@markNotificationsRead')->name('student.notifications.markread');
+    });
+
 });
 
 /************************ SUPER ADMIN ****************************/
@@ -184,4 +205,23 @@ Route::group(['namespace' => 'MyParent','middleware' => 'my_parent',], function(
 
     Route::get('/my_children', 'MyController@children')->name('my_children');
 
+});
+
+/************************ TEACHER ****************************/
+Route::group(['namespace' => 'SupportTeam', 'middleware' => 'teamSAT', 'prefix' => 'teacher'], function(){
+    Route::get('/dashboard', 'TeacherController@dashboard')->name('teacher.dashboard');
+    Route::get('/timetables', 'TeacherController@timetables')->name('teacher.timetables');
+    Route::get('/assignments', 'TeacherController@assignments')->name('teacher.assignments');
+    Route::get('/attendance', 'TeacherController@attendance')->name('teacher.attendance');
+    Route::get('/study_materials', 'TeacherController@studyMaterials')->name('teacher.study_materials');
+    Route::get('/doubts', 'TeacherController@doubts')->name('teacher.doubts');
+    Route::get('/students', 'TeacherController@students')->name('teacher.students');
+    Route::get('/exams', 'TeacherController@exams')->name('teacher.exams');
+
+    Route::get('/chat', 'TeacherController@chatIndex')->name('teacher.chat.index');
+    Route::get('/chat/{id}', 'TeacherController@chat')->name('teacher.chat');
+    Route::post('/chat/{id}', 'TeacherController@sendMessage')->name('teacher.chat.send');
+
+    Route::get('/notifications', 'TeacherController@notifications')->name('teacher.notifications');
+    Route::post('/notifications/mark-read', 'TeacherController@markNotificationsRead')->name('teacher.notifications.markread');
 });

@@ -3,7 +3,6 @@
 namespace App\Http\Middleware\Custom;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
 use App\Helpers\Qs;
 
 class Student
@@ -15,9 +14,12 @@ class Student
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, \Closure $next)
     {
-        return (Auth::check() && Qs::userIsStudent()) ? $next($request) : redirect()->route('login');
-    }
+        if (Qs::userIsStudent()) {
+            return $next($request);
+        }
 
+        return redirect()->route('dashboard');
+    }
 }

@@ -44,15 +44,17 @@
             <ul class="nav nav-sidebar" data-nav-type="accordion">
 
                 <!-- Main -->
+                @if(!Qs::userIsStudent() && !Qs::userIsTeacher())
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}" class="nav-link {{ (Route::is('dashboard')) ? 'active' : '' }}">
                         <i class="icon-home4"></i>
                         <span>{{ __('msg.dashboard') }}</span>
                     </a>
                 </li>
+                @endif
 
                 {{--Timetables & Assignments--}}
-                @if(Qs::userIsAcademic())
+                @if(Qs::userIsTeamSA())
                     <li class="nav-item">
                         <a href="{{ route('tt.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['tt.index', 'ttr.edit', 'ttr.show', 'ttr.manage']) ? 'active' : '' }}"><i class="icon-graduation2"></i> <span>{{ __('msg.timetables') }}</span></a>
                     </li>
@@ -97,7 +99,7 @@
                 @endif
 
                 {{--Manage Students--}}
-                @if(Qs::userIsTeamSAT())
+                @if(Qs::userIsTeamSAT() && !Qs::userIsTeacher())
                     <li class="nav-item nav-item-submenu {{ in_array(Route::currentRouteName(), ['students.create', 'students.list', 'students.edit', 'students.show', 'students.promotion', 'students.promotion_manage', 'students.graduated']) ? 'nav-item-expanded nav-item-open' : '' }} ">
                         <a href="#" class="nav-link"><i class="icon-users"></i> <span> {{ __('msg.students') }}</span></a>
 
@@ -167,7 +169,7 @@
                 @endif
 
                 {{--Exam--}}
-                @if(Qs::userIsTeamSAT())
+                @if(Qs::userIsTeamSAT() && !Qs::userIsTeacher())
                 <li class="nav-item nav-item-submenu {{ in_array(Route::currentRouteName(), ['exams.index', 'exams.edit', 'grades.index', 'grades.edit', 'marks.index', 'marks.manage', 'marks.bulk', 'marks.tabulation', 'marks.show', 'marks.batch_fix',]) ? 'nav-item-expanded nav-item-open' : '' }} ">
                     <a href="#" class="nav-link"><i class="icon-books"></i> <span> {{ __('msg.exams') }}</span></a>
 

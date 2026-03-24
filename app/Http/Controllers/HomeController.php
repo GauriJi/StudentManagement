@@ -38,6 +38,12 @@ class HomeController extends Controller
     public function dashboard()
     {
         $d=[];
+        if(Qs::userIsStudent()){
+            return redirect()->route('student.dashboard');
+        }
+        if(Qs::userIsTeacher()){
+            return redirect()->route('teacher.dashboard');
+        }
         if(Qs::userIsTeamSAT()){
             $d['users'] = $this->user->getAll();
         }

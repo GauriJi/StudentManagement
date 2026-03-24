@@ -33,6 +33,98 @@
 			<span class="navbar-text ml-md-3 mr-md-auto"></span>
 
         <ul class="navbar-nav">
+            @if(Qs::userIsStudent())
+                @php 
+                    $unreadNotifs = \App\Models\StudentNotification::where('student_id', Auth::user()->id)->where('is_read', false)->count(); 
+                    $recentNotifs = \App\Models\StudentNotification::where('student_id', Auth::user()->id)->orderByDesc('created_at')->take(5)->get();
+                @endphp
+                <li class="nav-item dropdown dropdown-user mr-md-2" id="stNotifBell">
+                    <a href="#" class="navbar-nav-link dropdown-toggle caret-0" data-toggle="dropdown">
+                        <i class="icon-bell2"></i>
+                        @if($unreadNotifs > 0)
+                            <span class="badge badge-pill bg-warning-400 ml-auto ml-md-0" style="position:absolute;top:5px;right:2px;padding:2px 5px;font-size:10px;">{{ $unreadNotifs }}</span>
+                        @endif
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-right dropdown-content wmin-md-300">
+                        <div class="dropdown-content-header">
+                            <span class="font-weight-semibold">Notifications</span>
+                            <a href="{{ route('student.notifications') }}" class="text-default"><i class="icon-list3"></i></a>
+                        </div>
+
+                        <div class="dropdown-content-body dropdown-scrollable">
+                            <ul class="media-list">
+                                @forelse($recentNotifs as $rn)
+                                    <li class="media">
+                                        <div class="media-body">
+                                            <div class="media-title">
+                                                <a href="{{ route('student.notifications') }}">
+                                                    <span class="font-weight-semibold">{{ $rn->title }}</span>
+                                                    <span class="text-muted float-right font-size-sm">{{ $rn->created_at->diffForHumans() }}</span>
+                                                </a>
+                                            </div>
+                                            <span class="text-muted">{{ Str::limit($rn->message, 50) }}</span>
+                                        </div>
+                                    </li>
+                                @empty
+                                    <li class="media text-center p-3 text-muted">No new notifications</li>
+                                @endforelse
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-content-footer justify-content-center p-0">
+                            <a href="{{ route('student.notifications') }}" class="bg-light text-grey w-100 py-2" data-popup="tooltip" title="View All"><i class="icon-menu7 d-block top-0"></i></a>
+                        </div>
+                    </div>
+                </li>
+            @endif
+
+            @if(Qs::userIsTeacher())
+                @php 
+                    $unreadNotifs = \App\Models\TeacherNotification::where('teacher_id', Auth::user()->id)->where('is_read', false)->count(); 
+                    $recentNotifs = \App\Models\TeacherNotification::where('teacher_id', Auth::user()->id)->orderByDesc('created_at')->take(5)->get();
+                @endphp
+                <li class="nav-item dropdown dropdown-user mr-md-2" id="teacherNotifBell">
+                    <a href="#" class="navbar-nav-link dropdown-toggle caret-0" data-toggle="dropdown">
+                        <i class="icon-bell2"></i>
+                        @if($unreadNotifs > 0)
+                            <span class="badge badge-pill bg-warning-400 ml-auto ml-md-0" style="position:absolute;top:5px;right:2px;padding:2px 5px;font-size:10px;">{{ $unreadNotifs }}</span>
+                        @endif
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-right dropdown-content wmin-md-300">
+                        <div class="dropdown-content-header">
+                            <span class="font-weight-semibold">Notifications</span>
+                            <a href="{{ route('teacher.notifications') }}" class="text-default"><i class="icon-list3"></i></a>
+                        </div>
+
+                        <div class="dropdown-content-body dropdown-scrollable">
+                            <ul class="media-list">
+                                @forelse($recentNotifs as $rn)
+                                    <li class="media">
+                                        <div class="media-body">
+                                            <div class="media-title">
+                                                <a href="{{ route('teacher.notifications') }}">
+                                                    <span class="font-weight-semibold">{{ $rn->title }}</span>
+                                                    <span class="text-muted float-right font-size-sm">{{ $rn->created_at->diffForHumans() }}</span>
+                                                </a>
+                                            </div>
+                                            <span class="text-muted">{{ Str::limit($rn->message, 50) }}</span>
+                                        </div>
+                                    </li>
+                                @empty
+                                    <li class="media text-center p-3 text-muted">No new notifications</li>
+                                @endforelse
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-content-footer justify-content-center p-0">
+                            <a href="{{ route('teacher.notifications') }}" class="bg-light text-grey w-100 py-2" data-popup="tooltip" title="View All"><i class="icon-menu7 d-block top-0"></i></a>
+                        </div>
+                    </div>
+                </li>
+            @endif
+
             <li class="nav-item dropdown">
                 <a href="#" class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
                     <i class="icon-lan"></i>
