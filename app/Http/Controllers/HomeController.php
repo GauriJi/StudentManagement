@@ -38,6 +38,9 @@ class HomeController extends Controller
     public function dashboard()
     {
         $d=[];
+        if(Qs::userIsSuperAdmin()){
+            return redirect()->route('super_admin.dashboard');
+        }
         if(Qs::userIsStudent()){
             return redirect()->route('student.dashboard');
         }

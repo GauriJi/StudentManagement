@@ -195,8 +195,36 @@ Route::group(['middleware' => 'auth'], function () {
 /************************ SUPER ADMIN ****************************/
 Route::group(['namespace' => 'SuperAdmin','middleware' => 'super_admin', 'prefix' => 'super_admin'], function(){
 
+    // Dashboard
+    Route::get('/dashboard', 'DashboardController@index')->name('super_admin.dashboard');
+
+    // Settings
     Route::get('/settings', 'SettingController@index')->name('settings');
     Route::put('/settings', 'SettingController@update')->name('settings.update');
+
+    // User Management
+    Route::get('/users', 'UserManagementController@index')->name('sa.users.index');
+    Route::get('/users/create', 'UserManagementController@create')->name('sa.users.create');
+    Route::post('/users', 'UserManagementController@store')->name('sa.users.store');
+    Route::get('/users/{id}/edit', 'UserManagementController@edit')->name('sa.users.edit');
+    Route::put('/users/{id}', 'UserManagementController@update')->name('sa.users.update');
+    Route::delete('/users/{id}', 'UserManagementController@destroy')->name('sa.users.destroy');
+    Route::post('/users/{id}/reset-password', 'UserManagementController@resetPassword')->name('sa.users.reset_pass');
+
+    // Fee Management
+    Route::get('/fees', 'FeeManagementController@index')->name('sa.fees.index');
+
+    // Staff Management
+    Route::get('/staff', 'StaffManagementController@index')->name('sa.staff.index');
+    Route::get('/staff/create', 'StaffManagementController@create')->name('sa.staff.create');
+    Route::post('/staff', 'StaffManagementController@store')->name('sa.staff.store');
+    Route::delete('/staff/{id}', 'StaffManagementController@destroy')->name('sa.staff.destroy');
+    Route::get('/staff/attendance', 'StaffManagementController@attendance')->name('sa.staff.attendance');
+    Route::post('/staff/attendance', 'StaffManagementController@markAttendance')->name('sa.staff.mark_attendance');
+
+    // Notifications
+    Route::get('/notifications', 'NotificationController@index')->name('sa.notifications.index');
+    Route::post('/notifications', 'NotificationController@send')->name('sa.notifications.send');
 
 });
 

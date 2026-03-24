@@ -44,7 +44,7 @@
             <ul class="nav nav-sidebar" data-nav-type="accordion">
 
                 <!-- Main -->
-                @if(!Qs::userIsStudent() && !Qs::userIsTeacher())
+                @if(!Qs::userIsStudent() && !Qs::userIsTeacher() && !Qs::userIsSuperAdmin())
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}" class="nav-link {{ (Route::is('dashboard')) ? 'active' : '' }}">
                         <i class="icon-home4"></i>
@@ -54,7 +54,7 @@
                 @endif
 
                 {{--Timetables & Assignments--}}
-                @if(Qs::userIsTeamSA())
+                @if(Qs::userIsTeamSA() && !Qs::userIsSuperAdmin())
                     <li class="nav-item">
                         <a href="{{ route('tt.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['tt.index', 'ttr.edit', 'ttr.show', 'ttr.manage']) ? 'active' : '' }}"><i class="icon-graduation2"></i> <span>{{ __('msg.timetables') }}</span></a>
                     </li>
@@ -73,7 +73,7 @@
                 @endif
 
                 {{--Administrative--}}
-                @if(Qs::userIsAdministrative())
+                @if(Qs::userIsAdministrative() && !Qs::userIsSuperAdmin())
                     <li class="nav-item nav-item-submenu {{ in_array(Route::currentRouteName(), ['payments.index', 'payments.create', 'payments.invoice', 'payments.receipts', 'payments.edit', 'payments.manage', 'payments.show',]) ? 'nav-item-expanded nav-item-open' : '' }} ">
                         <a href="#" class="nav-link"><i class="icon-office"></i> <span> {{ __('msg.administrative') }}</span></a>
 
@@ -99,7 +99,7 @@
                 @endif
 
                 {{--Manage Students--}}
-                @if(Qs::userIsTeamSAT() && !Qs::userIsTeacher())
+                @if(Qs::userIsTeamSAT() && !Qs::userIsTeacher() && !Qs::userIsSuperAdmin())
                     <li class="nav-item nav-item-submenu {{ in_array(Route::currentRouteName(), ['students.create', 'students.list', 'students.edit', 'students.show', 'students.promotion', 'students.promotion_manage', 'students.graduated']) ? 'nav-item-expanded nav-item-open' : '' }} ">
                         <a href="#" class="nav-link"><i class="icon-users"></i> <span> {{ __('msg.students') }}</span></a>
 
@@ -141,7 +141,7 @@
                     </li>
                 @endif
 
-                @if(Qs::userIsTeamSA())
+                @if(Qs::userIsTeamSA() && !Qs::userIsSuperAdmin())
                     {{--Manage Users--}}
                     <li class="nav-item">
                         <a href="{{ route('users.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['users.index', 'users.show', 'users.edit']) ? 'active' : '' }}"><i class="icon-users4"></i> <span> {{ __('msg.users') }}</span></a>
@@ -169,7 +169,7 @@
                 @endif
 
                 {{--Exam--}}
-                @if(Qs::userIsTeamSAT() && !Qs::userIsTeacher())
+                @if(Qs::userIsTeamSAT() && !Qs::userIsTeacher() && !Qs::userIsSuperAdmin())
                 <li class="nav-item nav-item-submenu {{ in_array(Route::currentRouteName(), ['exams.index', 'exams.edit', 'grades.index', 'grades.edit', 'marks.index', 'marks.manage', 'marks.bulk', 'marks.tabulation', 'marks.show', 'marks.batch_fix',]) ? 'nav-item-expanded nav-item-open' : '' }} ">
                     <a href="#" class="nav-link"><i class="icon-books"></i> <span> {{ __('msg.exams') }}</span></a>
 
