@@ -50,6 +50,12 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
 
+            // Auth routes registered WITHOUT namespace so controllers resolve with full class paths
+            Route::middleware('web')
+                ->group(function () {
+                    \Illuminate\Support\Facades\Auth::routes();
+                });
+
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));

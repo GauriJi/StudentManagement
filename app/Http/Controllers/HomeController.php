@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Qs;
 use App\Repositories\UserRepo;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -46,6 +47,12 @@ class HomeController extends Controller
         }
         if(Qs::userIsTeacher()){
             return redirect()->route('teacher.dashboard');
+        }
+        if(Qs::userIsParent()){
+            return redirect()->route('parent.dashboard');
+        }
+        if(Auth::user()->user_type === 'accountant'){
+            return redirect()->route('accountant.dashboard');
         }
         if(Qs::userIsTeamSAT()){
             $d['users'] = $this->user->getAll();

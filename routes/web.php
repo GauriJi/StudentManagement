@@ -1,7 +1,5 @@
 <?php
 
-Auth::routes();
-
 //Route::get('/test', 'TestController@index')->name('test');
 Route::get('/privacy-policy', 'HomeController@privacy_policy')->name('privacy_policy');
 Route::get('/terms-of-use', 'HomeController@terms_of_use')->name('terms_of_use');
@@ -228,10 +226,30 @@ Route::group(['namespace' => 'SuperAdmin','middleware' => 'super_admin', 'prefix
 
 });
 
+/************************ ACCOUNTANT ****************************/
+Route::group(['namespace' => 'Accountant', 'middleware' => ['auth', 'teamAccount'], 'prefix' => 'accountant'], function () {
+    Route::get('/dashboard',        'AccountantController@dashboard')->name('accountant.dashboard');
+    Route::get('/fees',             'AccountantController@feeCollection')->name('accountant.fees');
+    Route::get('/student-fees',     'AccountantController@studentFees')->name('accountant.student_fees');
+    Route::get('/expenses',         'AccountantController@expenses')->name('accountant.expenses');
+    Route::post('/expenses',        'AccountantController@storeExpense')->name('accountant.expenses.store');
+    Route::delete('/expenses/{id}', 'AccountantController@destroyExpense')->name('accountant.expenses.destroy');
+    Route::get('/reports',          'AccountantController@reports')->name('accountant.reports');
+    Route::get('/receipts',         'AccountantController@receipts')->name('accountant.receipts');
+});
+
 /************************ PARENT ****************************/
 Route::group(['namespace' => 'MyParent','middleware' => 'my_parent',], function(){
 
+    Route::get('/parent/dashboard', 'MyController@dashboard')->name('parent.dashboard');
     Route::get('/my_children', 'MyController@children')->name('my_children');
+    Route::get('/parent/performance/{child_id}', 'MyController@performance')->name('parent.performance');
+    Route::get('/parent/fees', 'MyController@fees')->name('parent.fees');
+    Route::get('/parent/notifications', 'MyController@notifications')->name('parent.notifications');
+    Route::post('/parent/notifications/mark-read', 'MyController@markNotificationsRead')->name('parent.notifications.markread');
+    Route::get('/parent/chat', 'MyController@chatIndex')->name('parent.chat.index');
+    Route::get('/parent/chat/{teacher_id}', 'MyController@chat')->name('parent.chat');
+    Route::post('/parent/chat/{teacher_id}', 'MyController@sendMessage')->name('parent.chat.send');
 
 });
 

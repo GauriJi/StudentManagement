@@ -44,7 +44,7 @@
             <ul class="nav nav-sidebar" data-nav-type="accordion">
 
                 <!-- Main -->
-                @if(!Qs::userIsStudent() && !Qs::userIsTeacher() && !Qs::userIsSuperAdmin())
+                @if(!Qs::userIsStudent() && !Qs::userIsTeacher() && !Qs::userIsSuperAdmin() && !Qs::userIsParent())
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}" class="nav-link {{ (Route::is('dashboard')) ? 'active' : '' }}">
                         <i class="icon-home4"></i>
