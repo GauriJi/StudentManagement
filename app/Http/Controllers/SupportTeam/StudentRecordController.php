@@ -36,7 +36,8 @@ class StudentRecordController extends Controller
         $st_id = Qs::decodeHash($st_id);
         $sr = $this->student->getRecord(['user_id' => $st_id])->first();
         $formatted_dob = \Carbon\Carbon::parse($sr->user->dob)->format('d/m/Y');
-        $data['password'] = Hash::make($formatted_dob);
+        $pass = $sr->user->email ?: $formatted_dob;
+        $data['password'] = Hash::make($pass);
         $this->user->update($st_id, $data);
         return back()->with('flash_success', __('p_reset'));
     }
@@ -65,7 +66,8 @@ class StudentRecordController extends Controller
         $data['code'] = strtoupper(Str::random(10));
         
         $formatted_dob = \Carbon\Carbon::parse($req->dob)->format('d/m/Y');
-        $data['password'] = Hash::make($formatted_dob);
+        $pass = $req->email ?: $formatted_dob;
+        $data['password'] = Hash::make($pass);
         
         $data['photo'] = Qs::getDefaultUserImage();
         $adm_no = $req->adm_no;
