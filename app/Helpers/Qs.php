@@ -188,9 +188,9 @@ class Qs
     }
 
     // Check if User is Head of Super Admins (Untouchable)
-    public static function headSA(int $user_id)
+    public static function headSA($user_id)
     {
-        return $user_id === 1;
+        return (int) $user_id === 1;
     }
 
     public static function userIsPTA()

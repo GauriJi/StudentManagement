@@ -12,7 +12,7 @@
 
 <div class="card border-0 shadow-sm" style="border-radius:14px;max-width:700px;">
     <div class="card-body">
-        <form action="{{ route('sa.users.update', $user->id) }}" method="POST">
+        <form action="{{ route('sa.users.update', Qs::hash($user->id)) }}" method="POST">
             @csrf @method('PUT')
             <div class="row">
                 <div class="col-md-6 mb-3">

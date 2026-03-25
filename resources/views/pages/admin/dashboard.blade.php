@@ -169,7 +169,7 @@
                         ['icon'=>'icon-book2','label'=>'Assignments','route'=>route('assignments.index'),'color'=>'#27ae60'],
                         ['icon'=>'icon-pencil5','label'=>'Exams','route'=>route('exams.index'),'color'=>'#f39c12'],
                         ['icon'=>'icon-wallet','label'=>'Fees','route'=>route('payments.manage'),'color'=>'#e67e22'],
-                        ['icon'=>'icon-users4','label'=>'Teachers','route'=>route('teachers.index'),'color'=>'#1abc9c'],
+                        ['icon'=>'icon-users4','label'=>'Teachers','route'=>route('users.index'),'color'=>'#1abc9c'],
                         ['icon'=>'icon-stack2','label'=>'Classes','route'=>route('classes.index'),'color'=>'#2c3e50'],
                     ];
                     @endphp

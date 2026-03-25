@@ -12,18 +12,15 @@ class UserUpdate extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
+        $id = $this->user()->id;
         return [
+            'name' => 'required|string|min:3|max:255',
             'phone' => 'sometimes|nullable|string|min:6|max:20',
             'phone2' => 'sometimes|nullable|string|min:6|max:20',
-            'email' => 'required|email|max:100|unique:users,id',
-            'username' => 'sometimes|nullable|alpha_dash|min:8|max:100|unique:users',
+            'email' => 'required|email|max:100|unique:users,email,' . $id,
+            'username' => 'sometimes|nullable|alpha_dash|min:8|max:100|unique:users,username,' . $id,
             'photo' => 'sometimes|nullable|image|mimes:jpeg,gif,png,jpg|max:2048',
             'address' => 'required|string|min:6|max:120'
         ];

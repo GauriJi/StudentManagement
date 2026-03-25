@@ -61,7 +61,7 @@
                                     <div class="form-group row">
                                         <label for="name" class="col-lg-3 col-form-label font-weight-semibold">Name</label>
                                         <div class="col-lg-9">
-                                            <input disabled="disabled" id="name" class="form-control" type="text" value="{{ $my->name }}">
+                                            <input id="name" name="name" required class="form-control" type="text" value="{{ $my->name }}">
                                         </div>
                                     </div>
 

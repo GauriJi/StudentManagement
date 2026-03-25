@@ -51,7 +51,7 @@
                 <div class="text-muted font-size-sm mt-1"><small>Joined: {{ \Carbon\Carbon::parse($s->staff->first()->emp_date)->format('d M Y') }}</small></div>
             @endif
             @if(!Qs::headSA($s->id))
-            <form action="{{ route('sa.staff.destroy', $s->id) }}" method="POST" class="mt-2" onsubmit="return confirm('Remove {{ $s->name }} from staff? This will delete the user account.')">
+            <form action="{{ route('sa.staff.destroy', Qs::hash($s->id)) }}" method="POST" class="mt-2" onsubmit="return confirm('Remove {{ $s->name }} from staff? This will delete the user account.')">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius:8px;"><i class="icon-trash mr-1"></i>Remove</button>
             </form>

@@ -77,17 +77,17 @@
                     <td>{{ $u->phone ?? '—' }}</td>
                     <td><span class="role-badge role-{{ $u->user_type }}">{{ str_replace('_',' ',$u->user_type) }}</span></td>
                     <td class="text-center">
-                        <a href="{{ route('sa.users.edit', $u->id) }}" class="btn btn-sm btn-outline-primary mr-1" title="Edit"><i class="icon-pencil7"></i></a>
+                        <a href="{{ route('sa.users.edit', Qs::hash($u->id)) }}" class="btn btn-sm btn-outline-primary mr-1" title="Edit"><i class="icon-pencil7"></i></a>
 
                         {{-- Reset Password --}}
-                        <form action="{{ route('sa.users.reset_pass', $u->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Reset password to default for {{ $u->name }}?')">
+                        <form action="{{ route('sa.users.reset_pass', Qs::hash($u->id)) }}" method="POST" class="d-inline" onsubmit="return confirm('Reset password to default for {{ $u->name }}?')">
                             @csrf
                             <button type="submit" class="btn btn-sm btn-outline-warning mr-1" title="Reset Password"><i class="icon-key"></i></button>
                         </form>
 
                         {{-- Delete --}}
                         @if(!Qs::headSA($u->id))
-                        <form action="{{ route('sa.users.destroy', $u->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete user {{ $u->name }}? This cannot be undone.')">
+                        <form action="{{ route('sa.users.destroy', Qs::hash($u->id)) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete user {{ $u->name }}? This cannot be undone.')">
                             @csrf @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete"><i class="icon-trash"></i></button>
                         </form>
