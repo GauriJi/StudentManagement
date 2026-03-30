@@ -69,7 +69,7 @@
                 </div>
                 
                 {{-- DOB --}}
-                <div class="col-md-6 mb-3 role-field" data-roles="teacher" style="display:none;">
+                <div class="col-md-6 mb-3 role-field" data-roles="student,teacher" style="display:none;">
                     <label class="font-weight-semibold">Date of Birth</label>
                     <input type="date" name="dob" class="form-control" value="{{ old('dob') }}" style="border-radius:8px;">
                 </div>
@@ -146,6 +146,29 @@
                     <label class="font-weight-semibold">Aadhar Card</label>
                     <input type="file" name="aadhar_card" class="form-control" style="border-radius:8px;">
                 </div>
+
+                {{-- Academic Details (Student) --}}
+                <div class="col-12 role-field" data-roles="student" style="display:none;">
+                    <hr>
+                    <h6 class="font-weight-bold">Academic Details</h6>
+                </div>
+                
+                <div class="col-md-6 mb-3 role-field" data-roles="student" style="display:none;">
+                    <label class="font-weight-semibold">Class Assigned <span class="text-danger">*</span></label>
+                    <select name="my_class_id" id="my_class_id" class="select-search form-control">
+                        <option value=""></option>
+                        @foreach($my_classes as $c)
+                            <option {{ (old('my_class_id') == $c->id ? 'selected' : '') }} value="{{ $c->id }}">{{ $c->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <div class="col-md-6 mb-3 role-field" data-roles="student" style="display:none;">
+                    <label class="font-weight-semibold">Class Section <span class="text-danger">*</span></label>
+                    <select name="section_id" id="section_id" class="select-search form-control">
+                        <option value="">Select Class First</option>
+                    </select>
+                </div>
                 
                 <div class="col-12 role-field" data-roles="student,parent" style="display:none;">
                     <hr>
@@ -158,9 +181,27 @@
                     <input type="text" name="father_name" class="form-control" value="{{ old('father_name') }}" style="border-radius:8px;">
                 </div>
                 <div class="col-md-6 mb-3 role-field" data-roles="student,parent" style="display:none;">
+                    <label class="font-weight-semibold">Fathers Username</label>
+                    <input type="text" name="father_username" class="form-control" value="{{ old('father_username') }}" style="border-radius:8px;">
+                </div>
+                <div class="col-md-6 mb-3 role-field" data-roles="student,parent" style="display:none;">
+                    <label class="font-weight-semibold">Fathers Email</label>
+                    <input type="email" name="father_email" class="form-control" value="{{ old('father_email') }}" style="border-radius:8px;">
+                </div>
+
+                <div class="col-md-6 mb-3 role-field" data-roles="student,parent" style="display:none;">
                     <label class="font-weight-semibold">Mother Name</label>
                     <input type="text" name="mother_name" class="form-control" value="{{ old('mother_name') }}" style="border-radius:8px;">
                 </div>
+                <div class="col-md-6 mb-3 role-field" data-roles="student,parent" style="display:none;">
+                    <label class="font-weight-semibold">Mothers Username</label>
+                    <input type="text" name="mother_username" class="form-control" value="{{ old('mother_username') }}" style="border-radius:8px;">
+                </div>
+                <div class="col-md-6 mb-3 role-field" data-roles="student,parent" style="display:none;">
+                    <label class="font-weight-semibold">Mothers Email</label>
+                    <input type="email" name="mother_email" class="form-control" value="{{ old('mother_email') }}" style="border-radius:8px;">
+                </div>
+                
                 <div class="col-md-6 mb-3 role-field" data-roles="student,parent" style="display:none;">
                     <label class="font-weight-semibold">Father Occupation</label>
                     <input type="text" name="father_occupation" class="form-control" value="{{ old('father_occupation') }}" style="border-radius:8px;">
@@ -246,6 +287,28 @@
             } else {
                 $('#lga_id').empty();
                 $('#lga_id').append('<option value="">Select State First</option>');
+            }
+        });
+
+        // Fetch Sections based on selected Class
+        $('#my_class_id').on('change', function() {
+            var class_id = $(this).val();
+            if(class_id) {
+                $.ajax({
+                    url: '/ajax/get_class_sections/' + class_id,
+                    type: "GET",
+                    dataType: "json",
+                    success:function(data) {
+                        $('#section_id').empty();
+                        $('#section_id').append('<option value="">Select Section</option>');
+                        $.each(data, function(key, value) {
+                            $('#section_id').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#section_id').empty();
+                $('#section_id').append('<option value="">Select Class First</option>');
             }
         });
     });

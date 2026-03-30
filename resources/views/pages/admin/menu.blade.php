@@ -5,6 +5,16 @@
     </a>
 </li>
 
+{{-- Student Information --}}
+<li class="nav-item nav-item-submenu {{ Route::is('students.*') ? 'nav-item-expanded nav-item-open' : '' }}">
+    <a href="#" class="nav-link"><i class="icon-users"></i><span> Student Information</span></a>
+    <ul class="nav nav-group-sub" data-submenu-title="Student Information">
+        @foreach(\App\Models\MyClass::orderBy('name')->get() as $c)
+            <li class="nav-item"><a href="{{ route('students.list', $c->id) }}" class="nav-link {{ (Route::is('students.list') && request()->route('class_id') == $c->id) ? 'active' : '' }}">{{ $c->name }}</a></li>
+        @endforeach
+    </ul>
+</li>
+
 {{-- Academic Calendar --}}
 <li class="nav-item">
     <a href="{{ route('admin.calendar') }}" class="nav-link {{ Route::is('admin.calendar') ? 'active' : '' }}">

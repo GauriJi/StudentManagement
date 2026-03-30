@@ -35,6 +35,7 @@ class UserManagementController extends Controller
         $d['states'] = \App\Models\State::all();
         $d['nationals'] = \App\Models\Nationality::all();
         $d['blood_groups'] = \App\Models\BloodGroup::all();
+        $d['my_classes'] = \App\Models\MyClass::orderBy('name', 'asc')->get();
         return view('pages.super_admin.users.create', $d);
     }
 
@@ -83,14 +84,38 @@ class UserManagementController extends Controller
             $sr = [];
             $sr['user_id'] = $user->id;
             $sr['session'] = Qs::getSetting('current_session');
-            // Adding a fallback to 1 to ensure model doesn't fail on required class if not provided in this view
-            $sr['my_class_id'] = $request->my_class_id ?? 1; 
-            $sr['section_id'] = $request->section_id ?? 1;
+            $sr['my_class_id'] = $request->my_class_id; 
+            $sr['section_id'] = $request->section_id;
             
             $sr['father_name'] = $request->father_name;
             $sr['mother_name'] = $request->mother_name;
             $sr['father_occupation'] = $request->father_occupation;
             $sr['yearly_income'] = $request->yearly_income;
+
+            // Auto-create parent logic
+            if ($request->filled('father_username') || $request->filled('mother_username') || $request->filled('father_email') || $request->filled('mother_email')) {
+                $dobPassword = $request->filled('dob') ? date('d-m-Y', strtotime($request->dob)) : 'password';
+                $parentName = $request->father_name ?? $request->mother_name ?? 'Parent of ' . $user->name;
+                $parentUsername = $request->father_username ?? $request->mother_username;
+                $parentEmail = $request->father_email ?? $request->mother_email ?? (strtolower($parentUsername).'@parent.local');
+
+                // Check if user already exists to avoid conflict
+                $existingParent = User::where('email', $parentEmail)->orWhere('username', $parentUsername)->first();
+                if ($existingParent) {
+                    $sr['my_parent_id'] = $existingParent->id;
+                } else {
+                    $parentUser = User::create([
+                        'name' => $parentName,
+                        'email' => $parentEmail,
+                        'username' => $parentUsername,
+                        'password' => Hash::make($dobPassword),
+                        'user_type' => 'parent',
+                        'code' => Qs::generateUserCode(),
+                        'photo' => Qs::getDefaultUserImage(),
+                    ]);
+                    $sr['my_parent_id'] = $parentUser->id;
+                }
+            }
 
             $docFields = ['aadhar_card', 'prev_marksheet', 'birth_certificate'];
             foreach ($docFields as $doc) {
