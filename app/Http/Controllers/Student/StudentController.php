@@ -228,6 +228,7 @@ class StudentController extends Controller
     public function notifications()
     {
         $data['notifications'] = \App\Models\StudentNotification::where('student_id', Auth::user()->id)
+            ->with('sender')
             ->orderByDesc('created_at')
             ->get();
             

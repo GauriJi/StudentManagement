@@ -63,7 +63,7 @@
                                                     <span class="text-muted float-right font-size-sm">{{ $rn->created_at->diffForHumans() }}</span>
                                                 </a>
                                             </div>
-                                            <span class="text-muted">{{ Str::limit($rn->message, 50) }}</span>
+                                            <span class="text-muted">{{ \Illuminate\Support\Str::limit($rn->message, 50) }}</span>
                                         </div>
                                     </li>
                                 @empty
@@ -109,7 +109,7 @@
                                                     <span class="text-muted float-right font-size-sm">{{ $rn->created_at->diffForHumans() }}</span>
                                                 </a>
                                             </div>
-                                            <span class="text-muted">{{ Str::limit($rn->message, 50) }}</span>
+                                            <span class="text-muted">{{ \Illuminate\Support\Str::limit($rn->message, 50) }}</span>
                                         </div>
                                     </li>
                                 @empty
@@ -120,6 +120,57 @@
 
                         <div class="dropdown-content-footer justify-content-center p-0">
                             <a href="{{ route('teacher.notifications') }}" class="bg-light text-grey w-100 py-2" data-popup="tooltip" title="View All"><i class="icon-menu7 d-block top-0"></i></a>
+                        </div>
+                    </div>
+                </li>
+            @endif
+
+            @if(Qs::userIsParent())
+                @php
+                    $children = \App\Models\StudentRecord::where('my_parent_id', Auth::user()->id)->pluck('user_id');
+                    $childUnread = \App\Models\StudentNotification::whereIn('student_id', $children)->where('is_read', false)->count();
+                    $directUnread = \App\Models\ParentNotification::where('parent_id', Auth::user()->id)->where('is_read', false)->count();
+                    $unreadNotifs = $childUnread + $directUnread;
+                    $recentChildNotifs = \App\Models\StudentNotification::whereIn('student_id', $children)->orderByDesc('created_at')->take(4)->get();
+                    $recentDirectNotifs = \App\Models\ParentNotification::where('parent_id', Auth::user()->id)->orderByDesc('created_at')->take(4)->get();
+                    $recentNotifs = $recentChildNotifs->merge($recentDirectNotifs)->sortByDesc('created_at')->take(5);
+                @endphp
+                <li class="nav-item dropdown dropdown-user mr-md-2" id="parentNotifBell">
+                    <a href="#" class="navbar-nav-link dropdown-toggle caret-0" data-toggle="dropdown">
+                        <i class="icon-bell2"></i>
+                        @if($unreadNotifs > 0)
+                            <span class="badge badge-pill bg-warning-400 ml-auto ml-md-0" style="position:absolute;top:5px;right:2px;padding:2px 5px;font-size:10px;">{{ $unreadNotifs }}</span>
+                        @endif
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-right dropdown-content wmin-md-300">
+                        <div class="dropdown-content-header">
+                            <span class="font-weight-semibold">Notifications</span>
+                            <a href="{{ route('parent.notifications') }}" class="text-default"><i class="icon-list3"></i></a>
+                        </div>
+
+                        <div class="dropdown-content-body dropdown-scrollable">
+                            <ul class="media-list">
+                                @forelse($recentNotifs as $rn)
+                                    <li class="media">
+                                        <div class="media-body">
+                                            <div class="media-title">
+                                                <a href="{{ route('parent.notifications') }}">
+                                                    <span class="font-weight-semibold">{{ $rn->title }}</span>
+                                                    <span class="text-muted float-right font-size-sm">{{ $rn->created_at->diffForHumans() }}</span>
+                                                </a>
+                                            </div>
+                                            <span class="text-muted">{{ \Illuminate\Support\Str::limit($rn->message, 50) }}</span>
+                                        </div>
+                                    </li>
+                                @empty
+                                    <li class="media text-center p-3 text-muted">No new notifications</li>
+                                @endforelse
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-content-footer justify-content-center p-0">
+                            <a href="{{ route('parent.notifications') }}" class="bg-light text-grey w-100 py-2" data-popup="tooltip" title="View All"><i class="icon-menu7 d-block top-0"></i></a>
                         </div>
                     </div>
                 </li>

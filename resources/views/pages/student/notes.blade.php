@@ -29,7 +29,7 @@
                 <div class="note-subject">{{ optional($n->subject)->name }}</div>
                 <div class="note-title">{{ $n->title }}</div>
                 <p class="text-muted" style="font-size:.88rem;line-height:1.6;margin-bottom:20px">
-                    {{ Str::limit($n->description, 100) }}
+                    {{ \Illuminate\Support\Str::limit($n->description, 100) }}
                 </p>
                 <div class="note-meta mb-3">
                     <span><i class="icon-user"></i> {{ optional($n->teacher)->name }}</span>

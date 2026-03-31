@@ -57,7 +57,7 @@
         if(markReadBtn) {
             markReadBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                fetch('{{ route("teacher.notifications.read") }}', {
+                fetch('{{ route("teacher.notifications.markread") }}', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',

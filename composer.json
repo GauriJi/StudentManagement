@@ -1,7 +1,11 @@
 {
     "name": "gauriji/student-management",
     "description": "Student Management System by GauriJi.",
-    "keywords": ["student", "management", "school"],
+    "keywords": [
+        "student",
+        "management",
+        "school"
+    ],
     "license": "NONE",
     "type": "project",
     "require": {

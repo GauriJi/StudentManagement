@@ -5,6 +5,7 @@ namespace App\Http\Controllers\MyParent;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\Mark;
+use App\Models\ParentNotification;
 use App\Models\Payment;
 use App\Models\PaymentRecord;
 use App\Models\StudentNotification;
@@ -55,9 +56,15 @@ class MyController extends Controller
 
         $d['children'] = $children;
         $d['total_children'] = $children->count();
-        $recent_notifs = StudentNotification::whereIn('student_id', $children->pluck('user_id'))
+
+        // Get unread count from both student notifications (for children) and parent notifications
+        $childNotifs = StudentNotification::whereIn('student_id', $children->pluck('user_id'))
             ->where('is_read', 0)->latest()->take(5)->get();
-        $d['recent_notifs'] = $recent_notifs;
+        
+        $parentNotifs = ParentNotification::where('parent_id', Auth::id())
+            ->where('is_read', 0)->latest()->take(5)->get();
+
+        $d['recent_notifs'] = $childNotifs->merge($parentNotifs)->sortByDesc('created_at')->take(5);
 
         return view('pages.parent.dashboard', $d);
     }
@@ -114,18 +121,64 @@ class MyController extends Controller
     }
 
     /* ===================== 5. Notifications ===================== */
-    public function notifications()
+    public function notifications(Request $request)
     {
         $children = $this->myChildren();
         $childUserIds = $children->pluck('user_id');
 
-        $notifications = StudentNotification::whereIn('student_id', $childUserIds)
-            ->with('student')
-            ->latest()
-            ->paginate(20);
+        $filter = $request->get('filter', 'all'); // all, children, direct
+
+        if ($filter === 'direct') {
+            // Only parent-direct notifications
+            $notifications = ParentNotification::where('parent_id', Auth::id())
+                ->with('sender')
+                ->latest()
+                ->paginate(20);
+        } elseif ($filter === 'children') {
+            // Only child-related notifications
+            $childQuery = StudentNotification::whereIn('student_id', $childUserIds)
+                ->with('student');
+            if ($request->filled('child')) {
+                $childQuery->where('student_id', $request->child);
+            }
+            $notifications = $childQuery->latest()->paginate(20);
+        } else {
+            // Combine both: use a union approach with manual merge
+            $childNotifs = StudentNotification::whereIn('student_id', $childUserIds)
+                ->with('student');
+            if ($request->filled('child')) {
+                $childNotifs->where('student_id', $request->child);
+            }
+            $childNotifs = $childNotifs->latest()->get()->map(function($n) {
+                $n->notif_source = 'child';
+                return $n;
+            });
+
+            $parentNotifs = ParentNotification::where('parent_id', Auth::id())
+                ->with('sender')
+                ->latest()
+                ->get()->map(function($n) {
+                    $n->notif_source = 'direct';
+                    // Normalize fields for the view
+                    $n->student = $n->sender;
+                    return $n;
+                });
+
+            $merged = $childNotifs->merge($parentNotifs)->sortByDesc('created_at');
+            
+            // Manual pagination
+            $page = $request->get('page', 1);
+            $perPage = 20;
+            $sliced = $merged->slice(($page - 1) * $perPage, $perPage);
+            $notifications = new \Illuminate\Pagination\LengthAwarePaginator(
+                $sliced, $merged->count(), $perPage, $page,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+        }
 
         $d['notifications'] = $notifications;
         $d['children']      = $children;
+        $d['filter']        = $filter;
 
         return view('pages.parent.notifications', $d);
     }
@@ -133,9 +186,16 @@ class MyController extends Controller
     public function markNotificationsRead(Request $request)
     {
         $children = $this->myChildren();
+        // Mark child notifications as read
         StudentNotification::whereIn('student_id', $children->pluck('user_id'))
             ->where('is_read', 0)
             ->update(['is_read' => 1]);
+        
+        // Mark direct parent notifications as read
+        ParentNotification::where('parent_id', Auth::id())
+            ->where('is_read', 0)
+            ->update(['is_read' => 1]);
+
         return back()->with('flash_success', 'All notifications marked as read.');
     }
 
