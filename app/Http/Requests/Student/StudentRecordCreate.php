@@ -22,10 +22,12 @@ class StudentRecordCreate extends FormRequest
     {
         return [
             'name' => 'required|string|min:6|max:150',
-            'adm_no' => 'sometimes|nullable|alpha_num|min:3|max:150|unique:student_records',
+            // adm_no is auto-generated server-side — no user input needed
+
             'gender' => 'required|string',
             'dob' => 'required',
-            'year_admitted' => 'required|string',
+            // year_admitted is auto-set to current year in the controller
+
             'phone' => 'sometimes|nullable|string|min:6|max:20',
             'email' => 'required|email|max:100|unique:users',
             'photo' => 'sometimes|nullable|image|mimes:jpeg,gif,png,jpg|max:2048',

@@ -58,20 +58,26 @@ class StudentRecordController extends Controller
        $sr =  $req->only(Qs::getStudentData(['aadhar_card', 'prev_marksheet', 'birth_certificate']));
 
         $ct = $this->my_class->findTypeByClass($req->my_class_id)->code;
-       /* $ct = ($ct == 'J') ? 'JSS' : $ct;
-        $ct = ($ct == 'S') ? 'SS' : $ct;*/
 
         $data['user_type'] = 'student';
         $data['name'] = ucwords($req->name);
         $data['code'] = strtoupper(Str::random(10));
-        
+
         $formatted_dob = \Carbon\Carbon::parse($req->dob)->format('d/m/Y');
         $pass = $req->email ?: $formatted_dob;
         $data['password'] = Hash::make($pass);
-        
         $data['photo'] = Qs::getDefaultUserImage();
-        $adm_no = $req->adm_no;
-        $data['username'] = strtoupper(Qs::getAppCode().'/'.$ct.'/'.$sr['year_admitted'].'/'.($adm_no ?: mt_rand(1000, 99999)));
+
+        // ── Auto-generate year_admitted & adm_no ──────────────────
+        $currentYear = date('Y');
+        $sr['year_admitted'] = $currentYear;
+
+        // Count existing students admitted this year, then pad to 3 digits
+        $countThisYear = \App\Models\StudentRecord::where('year_admitted', $currentYear)->count();
+        $seqNo = str_pad($countThisYear + 1, 3, '0', STR_PAD_LEFT); // 001, 002 …
+        $generatedAdmNo = strtoupper(Qs::getAppCode() . '/' . $ct . '/' . $currentYear . '/' . $seqNo);
+
+        $data['username'] = $generatedAdmNo;
 
         if($req->hasFile('photo')) {
             $photo = $req->file('photo');
@@ -83,7 +89,7 @@ class StudentRecordController extends Controller
 
         $user = $this->user->create($data); // Create User
 
-        $sr['adm_no'] = $data['username'];
+        $sr['adm_no'] = $data['username']; // e.g. SMS/J/2025/001
         $sr['user_id'] = $user->id;
         $sr['session'] = Qs::getSetting('current_session');
 

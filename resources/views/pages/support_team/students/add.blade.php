@@ -159,13 +159,12 @@
 
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="year_admitted">Year Admitted: <span class="text-danger">*</span></label>
-                                <select data-placeholder="Choose..." required name="year_admitted" id="year_admitted" class="select-search form-control">
-                                    <option value=""></option>
-                                    @for($y=date('Y', strtotime('- 10 years')); $y<=date('Y'); $y++)
-                                        <option {{ (old('year_admitted') == $y) ? 'selected' : '' }} value="{{ $y }}">{{ $y }}</option>
-                                    @endfor
-                                </select>
+                                <label for="year_admitted">Year Admitted:</label>
+                                <div class="form-control bg-light text-muted" style="cursor:default;">
+                                    <i class="icon-calendar3 mr-1 text-primary"></i>
+                                    {{ date('Y') }} <small class="ml-1">(auto)</small>
+                                </div>
+                                <span class="form-text text-muted">Set automatically to current year.</span>
                             </div>
                         </div>
                     </div>
@@ -200,7 +199,11 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Admission Number:</label>
-                                <input type="text" name="adm_no" placeholder="Admission Number" class="form-control" value="{{ old('adm_no') }}">
+                                <div class="form-control bg-light text-muted" style="cursor:default;">
+                                    <i class="icon-medal2 mr-1 text-success"></i>
+                                    Auto-generated
+                                </div>
+                                <span class="form-text text-muted">Format: <code>CODE/TYPE/{{ date('Y') }}/001</code></span>
                             </div>
                         </div>
                     </div>
