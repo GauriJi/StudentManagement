@@ -148,6 +148,38 @@
     </div>
 </div>
 
+{{-- Class Enrollment (sorted: NUR → LKG → UKG → Class 1–12) --}}
+<div class="card border-0 shadow-sm mb-3" style="border-radius:14px;">
+    <div class="card-header bg-white border-0 pb-0 d-flex justify-content-between align-items-center">
+        <h6 class="card-title font-weight-bold mb-0">
+            <i class="icon-stack2 mr-2 text-info"></i>Class-wise Student Enrollment
+        </h6>
+        <small class="text-muted">{{ $classes_enrollment->sum('student_record_count') }} total students</small>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            @php $grandTotal = max(1, $classes_enrollment->sum('student_record_count')); @endphp
+            @forelse($classes_enrollment as $cls)
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="p-2 border rounded" style="border-radius:10px!important;">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small class="font-weight-bold text-truncate" title="{{ $cls->name }}" style="max-width:80px;">{{ $cls->name }}</small>
+                        <span class="badge badge-pill badge-primary">{{ $cls->student_record_count }}</span>
+                    </div>
+                    <div class="progress" style="height:5px;border-radius:3px;">
+                        <div class="progress-bar bg-info"
+                             style="width:{{ round(($cls->student_record_count / $grandTotal) * 100) }}%">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="col-12 text-center text-muted py-2">No classes found.</div>
+            @endforelse
+        </div>
+    </div>
+</div>
+
 {{-- Recent Users --}}
 <div class="card border-0 shadow-sm" style="border-radius:14px;">
     <div class="card-header bg-white border-0 pb-0 d-flex justify-content-between align-items-center">

@@ -9,7 +9,18 @@
 <li class="nav-item nav-item-submenu {{ Route::is('students.*') ? 'nav-item-expanded nav-item-open' : '' }}">
     <a href="#" class="nav-link"><i class="icon-users"></i><span> Student Information</span></a>
     <ul class="nav nav-group-sub" data-submenu-title="Student Information">
-        @foreach(\App\Models\MyClass::orderBy('name')->get() as $c)
+        @php
+            $sortedClasses = \App\Models\MyClass::all()->sortBy(function ($c) {
+                $name  = strtolower(trim($c->name));
+                $order = ['nur' => 0, 'nursery' => 0, 'lkg' => 1, 'ukg' => 2];
+                foreach ($order as $key => $pos) {
+                    if (str_contains($name, $key)) return $pos;
+                }
+                preg_match('/(\d+)/', $c->name, $m);
+                return isset($m[1]) ? 3 + (int)$m[1] : 99;
+            });
+        @endphp
+        @foreach($sortedClasses as $c)
             <li class="nav-item"><a href="{{ route('students.list', $c->id) }}" class="nav-link {{ (Route::is('students.list') && request()->route('class_id') == $c->id) ? 'active' : '' }}">{{ $c->name }}</a></li>
         @endforeach
     </ul>
