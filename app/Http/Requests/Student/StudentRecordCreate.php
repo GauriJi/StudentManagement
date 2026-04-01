@@ -29,6 +29,7 @@ class StudentRecordCreate extends FormRequest
             // year_admitted is auto-set to current year in the controller
 
             'phone' => 'sometimes|nullable|string|min:6|max:20',
+            'alternate_number' => 'sometimes|nullable|string|max:20',
             'email' => 'required|email|max:100|unique:users',
             'photo' => 'sometimes|nullable|image|mimes:jpeg,gif,png,jpg|max:2048',
             'address' => 'required|string|min:6|max:120',
@@ -44,7 +45,11 @@ class StudentRecordCreate extends FormRequest
             'prev_marksheet' => 'required|file|mimes:jpeg,jpg,png,pdf|max:5120',
             'birth_certificate' => 'required|file|mimes:jpeg,jpg,png,pdf|max:2048',
             'father_name' => 'required|string|max:100',
+            'father_username' => 'sometimes|nullable|string|max:100|unique:users,username',
+            'father_email' => 'sometimes|nullable|email|max:100|unique:users,email',
             'mother_name' => 'required|string|max:100',
+            'mother_username' => 'sometimes|nullable|string|max:100|unique:users,username',
+            'mother_email' => 'sometimes|nullable|email|max:100|unique:users,email',
             'father_occupation' => 'required|string|max:100',
             'yearly_income' => 'required|numeric|min:0',
         ];

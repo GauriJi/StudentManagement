@@ -38,8 +38,12 @@
                     </select>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="font-weight-semibold">Phone</label>
+                    <label class="font-weight-semibold">Phone / Telephone</label>
                     <input type="text" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}" style="border-radius:8px;">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="font-weight-semibold">Alternate Number</label>
+                    <input type="text" name="alternate_number" class="form-control" value="{{ old('alternate_number', $user->alternate_number) }}" style="border-radius:8px;">
                 </div>
                 <div class="col-12 mb-1">
                     <hr class="my-2">

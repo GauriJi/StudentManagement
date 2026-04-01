@@ -77,7 +77,14 @@
             <div class="form-group">
                 <label>Telephone:</label>
                 <input value="{{ $val('phone2') }}" type="text" name="phone2"
-                       class="form-control" placeholder="Alternate number">
+                       class="form-control" placeholder="Telephone">
+            </div>
+        </div>
+        <div class="col-md-3 mt-2">
+            <div class="form-group">
+                <label>Alternate Number:</label>
+                <input value="{{ $val('alternate_number') }}" type="text" name="alternate_number"
+                       class="form-control" placeholder="Alternate Number">
             </div>
         </div>
     </div>
@@ -311,6 +318,37 @@
                        class="form-control" value="{{ $valSr('mother_name') }}" required>
             </div>
         </div>
+        
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Father's Username:</label>
+                <input type="text" name="father_username" placeholder="Username"
+                       class="form-control" value="{{ old('father_username') }}">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Father's Email:</label>
+                <input type="email" name="father_email" placeholder="Email"
+                       class="form-control" value="{{ old('father_email') }}">
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Mother's Username:</label>
+                <input type="text" name="mother_username" placeholder="Username"
+                       class="form-control" value="{{ old('mother_username') }}">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Mother's Email:</label>
+                <input type="email" name="mother_email" placeholder="Email"
+                       class="form-control" value="{{ old('mother_email') }}">
+            </div>
+        </div>
+
         <div class="col-md-3">
             <div class="form-group">
                 <label>Father's Occupation: <span class="text-danger">*</span></label>

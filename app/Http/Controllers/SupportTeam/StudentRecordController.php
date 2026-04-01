@@ -105,6 +105,30 @@ class StudentRecordController extends Controller
             }
         }
 
+        // Handle parent auto-creation if requested
+        if ($req->filled('father_username') || $req->filled('mother_username') || $req->filled('father_email') || $req->filled('mother_email')) {
+            $dobPassword = $req->filled('dob') ? \Carbon\Carbon::parse($req->dob)->format('d-m-Y') : 'password';
+            $parentName = $req->father_name ?? $req->mother_name ?? 'Parent of ' . $data['name'];
+            $parentUsername = $req->father_username ?? $req->mother_username;
+            $parentEmail = $req->father_email ?? $req->mother_email ?? (strtolower($parentUsername).'@parent.local');
+
+            $existingParent = \App\User::where('email', $parentEmail)->orWhere('username', $parentUsername)->first();
+            if ($existingParent) {
+                $sr['my_parent_id'] = $existingParent->id;
+            } else {
+                $parentUser = \App\User::create([
+                    'name' => $parentName,
+                    'email' => $parentEmail,
+                    'username' => $parentUsername,
+                    'password' => Hash::make($dobPassword),
+                    'user_type' => 'parent',
+                    'code' => Qs::generateUserCode(),
+                    'photo' => Qs::getDefaultUserImage(),
+                ]);
+                $sr['my_parent_id'] = $parentUser->id;
+            }
+        }
+
         $this->student->createRecord($sr); // Create Student
         return Qs::jsonStoreOk();
     }

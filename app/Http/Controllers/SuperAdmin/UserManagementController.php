@@ -36,6 +36,7 @@ class UserManagementController extends Controller
         $d['nationals'] = \App\Models\Nationality::all();
         $d['blood_groups'] = \App\Models\BloodGroup::all();
         $d['my_classes'] = \App\Models\MyClass::orderBy('name', 'asc')->get();
+        $d['dorms'] = \App\Models\Dorm::orderBy('name', 'asc')->get();
         return view('pages.super_admin.users.create', $d);
     }
 
@@ -44,9 +45,22 @@ class UserManagementController extends Controller
         $request->validate([
             'name'      => 'required|string|max:100',
             'email'     => 'required|email|unique:users,email',
+            'username'  => 'nullable|string|unique:users,username',
             'user_type' => 'required|string',
             'password'  => 'required|string|min:6|confirmed',
         ]);
+
+        if ($request->user_type === 'student') {
+            $request->validate([
+                'my_class_id' => 'required',
+                'section_id'  => 'required',
+                'adm_no'      => 'required|string|unique:student_records,adm_no',
+            ], [
+                'section_id.required' => 'Please select a class section.',
+                'my_class_id.required' => 'Please select a class.',
+                'adm_no.unique' => 'This Admission Number is already in use by another student.'
+            ]);
+        }
 
         $user = User::create([
             'name'      => $request->name,
@@ -59,11 +73,13 @@ class UserManagementController extends Controller
             'gender'    => $request->gender,
             'phone'     => $request->phone,
             'phone2'    => $request->phone2,
+            'alternate_number' => $request->alternate_number,
             'address'   => $request->address,
             'nal_id'    => $request->nal_id,
             'bg_id'     => $request->bg_id,
             'state_id'  => $request->state_id,
             'lga_id'    => $request->lga_id,
+            'city'      => $request->city,
             'father_name' => $request->father_name,
             'mother_name' => $request->mother_name,
             'father_occupation' => $request->father_occupation,
@@ -86,11 +102,17 @@ class UserManagementController extends Controller
             $sr['session'] = Qs::getSetting('current_session');
             $sr['my_class_id'] = $request->my_class_id; 
             $sr['section_id'] = $request->section_id;
+            $sr['adm_no'] = $request->adm_no;
+            $sr['year_admitted'] = $request->year_admitted;
+            $sr['dorm_id'] = $request->dorm_id;
+            $sr['dorm_room_no'] = $request->dorm_room_no;
+            $sr['house'] = $request->house;
             
             $sr['father_name'] = $request->father_name;
             $sr['mother_name'] = $request->mother_name;
             $sr['father_occupation'] = $request->father_occupation;
             $sr['yearly_income'] = $request->yearly_income;
+            $sr['city'] = $request->city;
 
             // Auto-create parent logic
             if ($request->filled('father_username') || $request->filled('mother_username') || $request->filled('father_email') || $request->filled('mother_email')) {
@@ -159,7 +181,7 @@ class UserManagementController extends Controller
             'user_type' => 'required|string',
         ]);
 
-        $data = $request->only('name', 'email', 'user_type', 'phone', 'address');
+        $data = $request->only('name', 'email', 'user_type', 'phone', 'alternate_number', 'address');
 
         if ($request->filled('password')) {
             $request->validate(['password' => 'min:6|confirmed']);

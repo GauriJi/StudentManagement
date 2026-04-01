@@ -55,6 +55,10 @@
                     <label class="font-weight-semibold">Telephone</label>
                     <input type="text" name="phone2" class="form-control" value="{{ old('phone2') }}" placeholder="Telephone" style="border-radius:8px;">
                 </div>
+                <div class="col-md-6 mb-3 role-field" data-roles="student" style="display:none;">
+                    <label class="font-weight-semibold">Alternate Number</label>
+                    <input type="text" name="alternate_number" class="form-control" value="{{ old('alternate_number') }}" placeholder="Alternate Number" style="border-radius:8px;">
+                </div>
                 
                 {{-- Address --}}
                 <div class="col-md-6 mb-3 role-field" data-roles="student,teacher,parent" style="display:none;">
@@ -117,6 +121,11 @@
                         <option value="">Select State First</option>
                     </select>
                 </div>
+                
+                <div class="col-md-6 mb-3 role-field" data-roles="student" style="display:none;">
+                    <label class="font-weight-semibold">City <span class="text-danger">*</span></label>
+                    <input type="text" name="city" class="form-control" value="{{ old('city') }}" placeholder="City" style="border-radius:8px;" required>
+                </div>
 
                 {{-- Blood Group --}}
                 <div class="col-md-6 mb-3 role-field" data-roles="student" style="display:none;">
@@ -168,6 +177,34 @@
                     <select name="section_id" id="section_id" class="select-search form-control">
                         <option value="">Select Class First</option>
                     </select>
+                </div>
+
+                <div class="col-md-6 mb-3 role-field" data-roles="student" style="display:none;">
+                    <label class="font-weight-semibold">Admission Number <span class="text-danger">*</span></label>
+                    <input type="text" name="adm_no" class="form-control" value="{{ old('adm_no') }}" placeholder="e.g. ADM2023001" style="border-radius:8px;">
+                </div>
+
+                <div class="col-md-6 mb-3 role-field" data-roles="student" style="display:none;">
+                    <label class="font-weight-semibold">Year Admitted <span class="text-danger">*</span></label>
+                    <input type="text" name="year_admitted" class="form-control" value="{{ old('year_admitted', \App\Helpers\Qs::getCurrentSession()) }}" placeholder="e.g. 2023-2024" style="border-radius:8px;">
+                </div>
+                
+                <div class="col-md-6 mb-3 role-field" data-roles="student" style="display:none;">
+                    <label class="font-weight-semibold">Dormitory</label>
+                    <select name="dorm_id" id="dorm_id" class="select-search form-control">
+                        <option value=""></option>
+                        @foreach($dorms ?? [] as $d)
+                            <option {{ (old('dorm_id') == $d->id ? 'selected' : '') }} value="{{ $d->id }}">{{ $d->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3 role-field" data-roles="student" style="display:none;">
+                    <label class="font-weight-semibold">Dormitory Room No</label>
+                    <input type="text" name="dorm_room_no" class="form-control" value="{{ old('dorm_room_no') }}" placeholder="Room Number" style="border-radius:8px;">
+                </div>
+                <div class="col-md-6 mb-3 role-field" data-roles="student" style="display:none;">
+                    <label class="font-weight-semibold">Sport House</label>
+                    <input type="text" name="house" class="form-control" value="{{ old('house') }}" placeholder="Sport House" style="border-radius:8px;">
                 </div>
                 
                 <div class="col-12 role-field" data-roles="student,parent" style="display:none;">
