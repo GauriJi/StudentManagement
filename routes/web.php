@@ -152,6 +152,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('attendance', 'AttendanceController@index')->name('attendance.index');
         Route::post('attendance/manage', 'AttendanceController@manage')->name('attendance.manage');
         Route::post('attendance/store', 'AttendanceController@store')->name('attendance.store');
+        Route::get('attendance/report', 'AttendanceController@report')->name('attendance.report');
 
         Route::resource('doubts', 'DoubtController');
         Route::post('doubts/{id}/reply', 'DoubtController@reply')->name('doubts.reply');
@@ -212,6 +213,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'admin'], 'prefix
     Route::get('/staff', 'StaffController@index')->name('admin.staff.index');
     Route::get('/staff/attendance', 'StaffController@attendance')->name('admin.staff.attendance');
     Route::post('/staff/attendance', 'StaffController@markAttendance')->name('admin.staff.mark_attendance');
+    Route::get('/staff/attendance/report', 'StaffController@attendanceReport')->name('admin.staff.attendance_report');
 });
 
 /************************ SUPER ADMIN ****************************/

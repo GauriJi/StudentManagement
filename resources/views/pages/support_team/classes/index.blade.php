@@ -22,6 +22,7 @@
                                 <th>S/N</th>
                                 <th>Name</th>
                                 <th>Class Type</th>
+                                <th>Class Teacher</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -31,6 +32,13 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $c->name }}</td>
                                     <td>{{ $c->class_type->name }}</td>
+                                    <td>
+                                        @if($c->teacher)
+                                            <span class="badge badge-success">{{ $c->teacher->name }}</span>
+                                        @else
+                                            <span class="badge badge-warning">Not Assigned</span>
+                                        @endif
+                                    </td>
                                     <td class="text-center">
                                         <div class="list-icons">
                                             <div class="dropdown">
@@ -80,6 +88,20 @@
                                         <input name="name" value="{{ old('name') }}" required type="text" class="form-control" placeholder="Name of Class">
                                     </div>
                                 </div>
+                                
+                                @if(Qs::userIsTeamSA())
+                                <div class="form-group row">
+                                    <label for="teacher_id" class="col-lg-3 col-form-label font-weight-semibold">Assign Teacher</label>
+                                    <div class="col-lg-9">
+                                        <select data-placeholder="Select Teacher" class="form-control select-search" name="teacher_id" id="teacher_id">
+                                            <option value=""></option>
+                                            @foreach($teachers as $t)
+                                                <option {{ old('teacher_id') == $t->id ? 'selected' : '' }} value="{{ $t->id }}">{{ $t->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                @endif
 
                                 <div class="form-group row">
                                     <label for="class_type_id" class="col-lg-3 col-form-label font-weight-semibold">Class Type</label>

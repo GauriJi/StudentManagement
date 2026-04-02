@@ -34,9 +34,15 @@
 </style>
 
     <div class="card shadow-sm border-0">
-        <div class="card-header bg-white pb-0 border-0">
-            <h5 class="card-title font-weight-bold mb-0">Modern Attendance System</h5>
-            <p class="text-muted">Currently marking for <strong>{{ $my_class->name }}</strong> on <strong>{{ date('d M Y', strtotime($date)) }}</strong></p>
+        <div class="card-header bg-white pb-0 border-0 d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="card-title font-weight-bold mb-0">Modern Attendance System</h5>
+                <p class="text-muted">Currently marking for <strong>{{ $my_class->name }}</strong> on <strong>{{ date('d M Y', strtotime($date)) }}</strong></p>
+            </div>
+            <div>
+                <a href="{{ route('attendance.report', ['my_class_id' => $my_class->id]) }}" class="btn btn-outline-info mr-2" style="border-radius:10px;"><i class="icon-list mr-1"></i> View Report</a>
+                <a href="{{ route('attendance.index') }}" class="btn btn-light" style="border-radius:10px;"><i class="icon-arrow-left5 mr-1"></i> Back to Classes</a>
+            </div>
         </div>
 
         <div class="card-body bg-light pt-4">

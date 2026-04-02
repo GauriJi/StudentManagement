@@ -38,6 +38,9 @@ class HomeController extends Controller
 
     public function dashboard()
     {
+        $user = Auth::user();
+        \Log::info('HomeController@dashboard: User ID: ' . $user->id . ' | Role: ' . $user->user_type);
+        
         $d=[];
         if(Qs::userIsSuperAdmin()){
             return redirect()->route('super_admin.dashboard');

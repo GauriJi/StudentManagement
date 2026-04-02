@@ -12,7 +12,20 @@ class MyClassRepo
 
     public function all()
     {
-        return MyClass::orderBy('id', 'asc')->with('class_type')->get();
+        return MyClass::orderBy('id', 'asc')->with('class_type', 'teacher')->get();
+    }
+
+    public function getTeacherClasses($teacher_id)
+    {
+        // Get classes where teacher is the Class Teacher
+        $class_ids = MyClass::where('teacher_id', $teacher_id)->pluck('id')->toArray();
+        
+        // Get classes where teacher is a Subject Teacher
+        $subject_class_ids = Subject::where('teacher_id', $teacher_id)->pluck('my_class_id')->unique()->toArray();
+        
+        $all_class_ids = array_unique(array_merge($class_ids, $subject_class_ids));
+        
+        return MyClass::whereIn('id', $all_class_ids)->with('class_type', 'teacher')->get();
     }
 
     public function getMC($data)

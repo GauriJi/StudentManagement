@@ -38,7 +38,10 @@
                 <h5 class="card-title font-weight-bold mb-0">Staff Attendance</h5>
                 <p class="text-muted">Marking attendance for <strong>{{ date('d M Y', strtotime($date)) }}</strong></p>
             </div>
-            <a href="{{ route('admin.staff.index') }}" class="btn btn-light" style="border-radius:10px;"><i class="icon-arrow-left5 mr-1"></i> Back to Staff</a>
+            <div>
+                <a href="{{ route('admin.staff.attendance_report') }}" class="btn btn-outline-info mr-2" style="border-radius:10px;"><i class="icon-list mr-1"></i> View Report</a>
+                <a href="{{ route('admin.staff.index') }}" class="btn btn-light" style="border-radius:10px;"><i class="icon-arrow-left5 mr-1"></i> Back to Staff</a>
+            </div>
         </div>
 
         <div class="card-body bg-light pt-4">

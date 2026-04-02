@@ -79,4 +79,37 @@ class AttendanceController extends Controller
 
         return redirect()->route('attendance.index')->with('flash_success', 'Attendance recorded successfully for '.$date);
     }
+
+    public function report(Request $request)
+    {
+        $class_id = $request->my_class_id;
+        $filter_month = $request->get('month'); // YYYY-MM
+        $filter_date  = $request->get('date');  // YYYY-MM-DD
+
+        if (!$class_id) {
+            return redirect()->route('attendance.index')->with('flash_danger', 'Please select a class first.');
+        }
+
+        $my_class = MyClass::findOrFail($class_id);
+
+        $query = Attendance::with('student.user')->where('my_class_id', $class_id)->orderBy('date', 'desc');
+
+        $period = "All Time";
+
+        if ($filter_date) {
+            $query->where('date', $filter_date);
+            $period = date('d F Y', strtotime($filter_date));
+        } elseif ($filter_month) {
+            $query->where('date', 'like', $filter_month . '%');
+            $period = date('F Y', strtotime($filter_month . '-01'));
+        }
+
+        $d['attendances'] = $query->get();
+        $d['filter_date'] = $filter_date;
+        $d['filter_month'] = $filter_month;
+        $d['period'] = $period;
+        $d['my_class'] = $my_class;
+
+        return view('pages.support_team.attendance.report', $d);
+    }
 }

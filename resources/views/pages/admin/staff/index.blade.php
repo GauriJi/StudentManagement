@@ -19,6 +19,9 @@
         <small class="text-muted">Viewing all staff members ({{ $staff->count() }} total)</small>
     </div>
     <div>
+        <a href="{{ route('admin.staff.attendance_report') }}" class="btn btn-outline-info mr-2" style="border-radius:10px;">
+            <i class="icon-list mr-1"></i> Attendance Report
+        </a>
         <a href="{{ route('admin.staff.attendance') }}" class="btn btn-outline-success" style="border-radius:10px;">
             <i class="icon-calendar mr-1"></i> Manage Staff Attendance
         </a>

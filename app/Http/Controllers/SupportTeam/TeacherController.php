@@ -5,26 +5,39 @@ namespace App\Http\Controllers\SupportTeam;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Repositories\MyClassRepo;
+
 class TeacherController extends Controller
 {
+    protected $my_class;
+
+    public function __construct(MyClassRepo $my_class)
+    {
+        $this->my_class = $my_class;
+    }
+
     public function dashboard()
     {
         $teacher_id = \Auth::user()->id;
+        
+        $my_classes = $this->my_class->getTeacherClasses($teacher_id);
+        $class_ids = $my_classes->pluck('id')->unique()->toArray();
+        
         $subjects = \App\Models\Subject::where('teacher_id', $teacher_id)->with('my_class')->get();
-        $class_ids = $subjects->pluck('my_class_id')->unique()->toArray();
         $total_students = \App\Models\StudentRecord::whereIn('my_class_id', $class_ids)->count();
         
         $pending_doubts = \App\Models\Doubt::where('teacher_id', $teacher_id)->where('is_resolved', false)->count();
         $unread_chats = \App\Models\TeacherChat::where('teacher_id', $teacher_id)->where('sender_type', 'student')->where('is_read', false)->count();
 
-        return view('pages.teacher.dashboard', compact('subjects', 'total_students', 'pending_doubts', 'unread_chats'));
+        return view('pages.teacher.dashboard', compact('subjects', 'total_students', 'pending_doubts', 'unread_chats', 'my_classes'));
     }
 
     public function timetables()
     {
         $teacher_id = \Auth::user()->id;
-        $class_ids = \App\Models\Subject::where('teacher_id', $teacher_id)->pluck('my_class_id')->unique()->toArray();
-        $my_classes = \App\Models\MyClass::whereIn('id', $class_ids)->get();
+        $my_classes = $this->my_class->getTeacherClasses($teacher_id);
+        $class_ids = $my_classes->pluck('id')->unique()->toArray();
+        
         $tt_records = \App\Models\TimeTableRecord::whereIn('my_class_id', $class_ids)->get();
 
         return view('pages.teacher.timetables.index', compact('my_classes', 'tt_records'));
@@ -43,8 +56,7 @@ class TeacherController extends Controller
         $teacher_id = \Auth::user()->id;
         $assignments = \App\Models\Assignment::where('teacher_id', $teacher_id)->with(['my_class', 'subject'])->latest()->get();
         
-        $class_ids = \App\Models\Subject::where('teacher_id', $teacher_id)->pluck('my_class_id')->unique()->toArray();
-        $my_classes = \App\Models\MyClass::whereIn('id', $class_ids)->get();
+        $my_classes = $this->my_class->getTeacherClasses($teacher_id);
         $subjects = \App\Models\Subject::where('teacher_id', $teacher_id)->get();
 
         return view('pages.teacher.assignments.index', compact('assignments', 'my_classes', 'subjects'));
@@ -53,8 +65,7 @@ class TeacherController extends Controller
     public function attendance()
     {
         $teacher_id = \Auth::user()->id;
-        $class_ids = \App\Models\Subject::where('teacher_id', $teacher_id)->pluck('my_class_id')->unique()->toArray();
-        $my_classes = \App\Models\MyClass::whereIn('id', $class_ids)->get();
+        $my_classes = $this->my_class->getTeacherClasses($teacher_id);
 
         return view('pages.support_team.attendance.index', compact('my_classes'));
     }
@@ -64,8 +75,7 @@ class TeacherController extends Controller
         $teacher_id = \Auth::user()->id;
         $materials = \App\Models\StudyMaterial::where('teacher_id', $teacher_id)->with(['my_class', 'subject'])->latest()->get();
         
-        $class_ids = \App\Models\Subject::where('teacher_id', $teacher_id)->pluck('my_class_id')->unique()->toArray();
-        $my_classes = \App\Models\MyClass::whereIn('id', $class_ids)->get();
+        $my_classes = $this->my_class->getTeacherClasses($teacher_id);
         $subjects = \App\Models\Subject::where('teacher_id', $teacher_id)->get();
 
         return view('pages.teacher.study_materials.index', compact('materials', 'my_classes', 'subjects'));
@@ -81,8 +91,8 @@ class TeacherController extends Controller
     public function students()
     {
         $teacher_id = \Auth::user()->id;
-        $class_ids = \App\Models\Subject::where('teacher_id', $teacher_id)->pluck('my_class_id')->unique()->toArray();
-        $my_classes = \App\Models\MyClass::whereIn('id', $class_ids)->get();
+        $my_classes = $this->my_class->getTeacherClasses($teacher_id);
+        $class_ids = $my_classes->pluck('id')->unique()->toArray();
 
         $classOrder = [
             'Nursery' => 1, 'Nur' => 1, 'LKG' => 2, 'UKG' => 3,
@@ -112,8 +122,8 @@ class TeacherController extends Controller
 
         $exams = \App\Models\Exam::where('year', $year)->get();
         
-        $class_ids = \App\Models\Subject::where('teacher_id', $teacher_id)->pluck('my_class_id')->unique()->toArray();
-        $my_classes = \App\Models\MyClass::whereIn('id', $class_ids)->get();     
+        $my_classes = $this->my_class->getTeacherClasses($teacher_id);
+        $class_ids = $my_classes->pluck('id')->unique()->toArray();
         $subjects = \App\Models\Subject::where('teacher_id', $teacher_id)->get();
         $sections = \App\Models\Section::whereIn('my_class_id', $class_ids)->get();
         $selected = false;
@@ -125,7 +135,8 @@ class TeacherController extends Controller
     {
         $teacher_id = \Auth::user()->id;
         // Get all students who have chatted with this teacher or are in their classes
-        $class_ids = \App\Models\Subject::where('teacher_id', $teacher_id)->pluck('my_class_id')->unique()->toArray();
+        $my_classes = $this->my_class->getTeacherClasses($teacher_id);
+        $class_ids = $my_classes->pluck('id')->unique()->toArray();
         $students = \App\Models\StudentRecord::whereIn('my_class_id', $class_ids)->with('user')->get();
         
         $recent_chats = \App\Models\TeacherChat::where('teacher_id', $teacher_id)

@@ -55,4 +55,29 @@ class StaffController extends Controller
 
         return back()->with('flash_success', 'Staff attendance for ' . date('d M Y', strtotime($date)) . ' has been saved.');
     }
+
+    public function attendanceReport(Request $request)
+    {
+        $query = StaffAttendance::with('user')->orderBy('date', 'desc');
+
+        $filter_month = $request->get('month'); // YYYY-MM
+        $filter_date  = $request->get('date');  // YYYY-MM-DD
+
+        $period = "All Time";
+
+        if ($filter_date) {
+            $query->where('date', $filter_date);
+            $period = date('d F Y', strtotime($filter_date));
+        } elseif ($filter_month) {
+            $query->where('date', 'like', $filter_month . '%');
+            $period = date('F Y', strtotime($filter_month . '-01'));
+        }
+
+        $d['attendances'] = $query->get();
+        $d['filter_date'] = $filter_date;
+        $d['filter_month'] = $filter_month;
+        $d['period'] = $period;
+
+        return view('pages.admin.staff.attendance_report', $d);
+    }
 }

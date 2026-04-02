@@ -71,8 +71,21 @@
             </div>
             <div class="card-body">
                 <div class="row">
+                    @forelse($my_classes as $mc)
+                    <div class="col-md-6 text-left">
+                        <div class="class-badge d-flex justify-content-between align-items-center bg-light border-left-success">
+                            <div>
+                                <span class="d-block font-weight-bold text-success">{{ $mc->name }}</span>
+                                <span class="text-muted font-size-sm">Class Teacher</span>
+                            </div>
+                            <a href="{{ route('teacher.students') }}" class="btn btn-sm btn-success border"><i class="icon-users mr-1"></i> Students</a>
+                        </div>
+                    </div>
+                    @empty
+                    @endforelse
+
                     @forelse($subjects as $s)
-                    <div class="col-md-6">
+                    <div class="col-md-6 text-left">
                         <div class="class-badge d-flex justify-content-between align-items-center">
                             <div>
                                 <span class="d-block font-weight-bold text-primary">{{ $s->my_class->name }}</span>
@@ -82,7 +95,9 @@
                         </div>
                     </div>
                     @empty
-                    <div class="col-12 text-center text-muted py-3">No subjects assigned yet.</div>
+                    @if($my_classes->count() == 0)
+                    <div class="col-12 text-center text-muted py-3">No classes or subjects assigned yet.</div>
+                    @endif
                     @endforelse
                 </div>
             </div>

@@ -26,6 +26,7 @@ class MyClassController extends Controller
     {
         $d['my_classes'] = $this->my_class->all();
         $d['class_types'] = $this->my_class->getTypes();
+        $d['teachers'] = $this->user->getUserByType('teacher');
 
         return view('pages.support_team.classes.index', $d);
     }
@@ -33,6 +34,12 @@ class MyClassController extends Controller
     public function store(ClassCreate $req)
     {
         $data = $req->all();
+        
+        // Ensure only Admin can assign teacher_id
+        if (!Qs::userIsAdmin() && isset($data['teacher_id'])) {
+            unset($data['teacher_id']);
+        }
+        
         $mc = $this->my_class->create($data);
 
         // Create Default Section
@@ -49,14 +56,24 @@ class MyClassController extends Controller
 
     public function edit($id)
     {
+        $user = \Auth::user();
+        \Log::info('MyClassController@edit: User ID: ' . $user->id . ' | Role: ' . $user->user_type . ' | Class ID: ' . $id);
+        
         $d['c'] = $c = $this->my_class->find($id);
+        $d['teachers'] = $this->user->getUserByType('teacher');
 
         return is_null($c) ? Qs::goWithDanger('classes.index') : view('pages.support_team.classes.edit', $d) ;
     }
 
     public function update(ClassUpdate $req, $id)
     {
-        $data = $req->only(['name']);
+        $data = $req->only(['name', 'teacher_id']);
+        
+        // Ensure only Admin can assign teacher_id
+        if (!Qs::userIsAdmin() && isset($data['teacher_id'])) {
+            unset($data['teacher_id']);
+        }
+
         $this->my_class->update($id, $data);
 
         return Qs::jsonUpdateOk();
