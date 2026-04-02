@@ -1,0 +1,50 @@
+@extends('layouts.master')
+@section('page_title', 'Staff Information')
+
+@section('content')
+<style>
+    .staff-card { border:none; border-radius:12px; transition: transform 0.2s, box-shadow 0.2s; }
+    .staff-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+    .role-tag { display:inline-block; padding: 3px 10px; border-radius:999px; font-size:11px; font-weight:700; text-transform:capitalize; }
+    .role-super_admin { background:#fde8e8; color:#c0392b; }
+    .role-admin       { background:#fdebd0; color:#e67e22; }
+    .role-teacher     { background:#d5f5e3; color:#27ae60; }
+    .role-accountant  { background:#d6eaf8; color:#2980b9; }
+    .role-librarian   { background:#e8daef; color:#8e44ad; }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h5 class="font-weight-bold mb-0"><i class="icon-office mr-2 text-secondary"></i>Staff Information</h5>
+        <small class="text-muted">Viewing all staff members ({{ $staff->count() }} total)</small>
+    </div>
+    <div>
+        <a href="{{ route('admin.staff.attendance') }}" class="btn btn-outline-success" style="border-radius:10px;">
+            <i class="icon-calendar mr-1"></i> Manage Staff Attendance
+        </a>
+    </div>
+</div>
+
+<div class="row">
+@forelse($staff as $s)
+<div class="col-md-4 col-lg-3 mb-3">
+    <div class="card staff-card shadow-sm h-100">
+        <div class="card-body text-center py-4">
+            <img src="{{ $s->photo }}" width="70" height="70" class="rounded-circle border mb-2">
+            <h6 class="font-weight-bold mb-1">{{ $s->name }}</h6>
+            <span class="role-tag role-{{ $s->user_type }}">{{ str_replace('_',' ',$s->user_type) }}</span>
+            <div class="text-muted font-size-sm mt-1">{{ $s->email }}</div>
+            @if($s->phone)
+                <div class="text-muted font-size-sm"><i class="icon-phone2"></i> {{ $s->phone }}</div>
+            @endif
+            @if($s->staff->first())
+                <div class="text-muted font-size-sm mt-1"><small>Joined: {{ \Carbon\Carbon::parse($s->staff->first()->emp_date)->format('d M Y') }}</small></div>
+            @endif
+        </div>
+    </div>
+</div>
+@empty
+<div class="col-12 text-center text-muted py-5">No staff members found.</div>
+@endforelse
+</div>
+@endsection

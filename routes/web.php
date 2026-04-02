@@ -207,6 +207,11 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'admin'], 'prefix
     Route::post('/timetable',                    'TimetableController@store')->name('admin.timetable.store');
     Route::delete('/timetable/{id}',             'TimetableController@destroy')->name('admin.timetable.destroy');
     Route::get('/timetable/sections/{classId}',  'TimetableController@getSections')->name('admin.timetable.sections');
+
+    // Staff
+    Route::get('/staff', 'StaffController@index')->name('admin.staff.index');
+    Route::get('/staff/attendance', 'StaffController@attendance')->name('admin.staff.attendance');
+    Route::post('/staff/attendance', 'StaffController@markAttendance')->name('admin.staff.mark_attendance');
 });
 
 /************************ SUPER ADMIN ****************************/

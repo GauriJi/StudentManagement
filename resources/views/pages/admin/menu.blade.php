@@ -89,6 +89,13 @@
     </a>
 </li>
 
+{{-- Staff --}}
+<li class="nav-item">
+    <a href="{{ route('admin.staff.index') }}" class="nav-link {{ Route::is('admin.staff.*') ? 'active' : '' }}">
+        <i class="icon-user-tie"></i><span>Staff</span>
+    </a>
+</li>
+
 {{-- Subjects --}}
 <li class="nav-item">
     <a href="{{ route('subjects.index') }}" class="nav-link {{ Route::is('subjects.*') ? 'active' : '' }}">
