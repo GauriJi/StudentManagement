@@ -201,6 +201,12 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'admin'], 'prefix
 
     // Substitution
     Route::get('/substitution',  'SubstitutionController@index')->name('admin.substitution');
+
+    // Timetable (new day-vs-period grid system)
+    Route::get('/timetable',                     'TimetableController@index')->name('admin.timetable');
+    Route::post('/timetable',                    'TimetableController@store')->name('admin.timetable.store');
+    Route::delete('/timetable/{id}',             'TimetableController@destroy')->name('admin.timetable.destroy');
+    Route::get('/timetable/sections/{classId}',  'TimetableController@getSections')->name('admin.timetable.sections');
 });
 
 /************************ SUPER ADMIN ****************************/

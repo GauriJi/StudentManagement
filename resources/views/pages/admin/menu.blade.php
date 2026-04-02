@@ -9,9 +9,20 @@
 <li class="nav-item nav-item-submenu {{ Route::is('students.*') ? 'nav-item-expanded nav-item-open' : '' }}">
     <a href="#" class="nav-link"><i class="icon-users"></i><span> Student Information</span></a>
     <ul class="nav nav-group-sub" data-submenu-title="Student Information">
-        @foreach(\App\Models\MyClass::orderBy('name')->get() as $c)
+        @php
+            $adminSortedClasses = \App\Models\MyClass::all()->sortBy(function ($c) {
+                $name = strtolower(trim($c->name));
+                if (str_contains($name,'nur') || str_contains($name,'nursery')) return 0;
+                if (str_contains($name,'lkg')) return 1;
+                if (str_contains($name,'ukg')) return 2;
+                preg_match('/(\d+)/', $c->name, $m);
+                return isset($m[1]) ? 3 + (int)$m[1] : 99;
+            });
+        @endphp
+        @foreach($adminSortedClasses as $c)
             <li class="nav-item"><a href="{{ route('students.list', $c->id) }}" class="nav-link {{ (Route::is('students.list') && request()->route('class_id') == $c->id) ? 'active' : '' }}">{{ $c->name }}</a></li>
         @endforeach
+
     </ul>
 </li>
 
@@ -24,7 +35,7 @@
 
 {{-- Timetable --}}
 <li class="nav-item">
-    <a href="{{ route('tt.index') }}" class="nav-link {{ Route::is('tt.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.timetable') }}" class="nav-link {{ Route::is('admin.timetable*') ? 'active' : '' }}">
         <i class="icon-table2"></i><span>Timetable</span>
     </a>
 </li>
