@@ -183,8 +183,8 @@
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a href="{{ route('lang.switch', 'en') }}" class="dropdown-item">English</a>
-                    <a href="{{ route('lang.switch', 'hi') }}" class="dropdown-item">Hindi (हिंदी)</a>
+                    <a href="javascript:void(0);" onclick="changeLanguage('en')" class="dropdown-item">English</a>
+                    <a href="javascript:void(0);" onclick="changeLanguage('hi')" class="dropdown-item">Hindi (हिंदी)</a>
                 </div>
             </li>
 

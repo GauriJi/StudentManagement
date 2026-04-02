@@ -11,6 +11,16 @@
     <title> @yield('page_title') | {{ config('app.name') }} </title>
 
     @include('partials.inc_top')
+
+    <style>
+        /* Hide Google Translate top bar and default select */
+        .skiptranslate { display: none !important; }
+        body { top: 0px !important; }
+        .goog-tooltip { display: none !important; }
+        .goog-tooltip:hover { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+        #google_translate_element { display: none !important; }
+    </style>
 </head>
 
 <body class="{{ in_array(Route::currentRouteName(), ['payments.invoice', 'marks.tabulation', 'marks.show', 'ttr.manage', 'ttr.show']) ? 'sidebar-xs' : '' }}">
@@ -44,5 +54,21 @@
 
 @include('partials.inc_bottom')
 @yield('scripts')
+
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'en', autoDisplay: false}, 'google_translate_element');
+    }
+    
+    function changeLanguage(langCode) {
+        document.cookie = "googtrans=/en/" + langCode + "; path=/;";
+        document.cookie = "googtrans=/en/" + langCode + "; domain=" + window.location.hostname + "; path=/;";
+        document.cookie = "googtrans=/en/" + langCode + "; domain=." + window.location.hostname + "; path=/;";
+        window.location.reload();
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>

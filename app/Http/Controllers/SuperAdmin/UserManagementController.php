@@ -166,14 +166,24 @@ class UserManagementController extends Controller
 
     public function edit($id)
     {
-        $d['user']       = User::findOrFail($id);
+        $dec_id = Qs::decodeHash($id) ?: $id;
+        $d['user']       = User::findOrFail($dec_id);
+
+        if ($d['user']->user_type === 'student') {
+            $sr = \App\Models\StudentRecord::where('user_id', $d['user']->id)->first();
+            if ($sr) {
+                return redirect()->route('students.edit', Qs::hash($sr->id));
+            }
+        }
+
         $d['user_types'] = Qs::getAllUserTypes();
         return view('pages.super_admin.users.edit', $d);
     }
 
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        $dec_id = Qs::decodeHash($id) ?: $id;
+        $user = User::findOrFail($dec_id);
 
         $request->validate([
             'name'      => 'required|string|max:100',
@@ -195,16 +205,18 @@ class UserManagementController extends Controller
 
     public function destroy($id)
     {
-        if (Qs::headSA($id)) {
+        $dec_id = Qs::decodeHash($id) ?: $id;
+        if (Qs::headSA($dec_id)) {
             return back()->with('flash_danger', 'Cannot delete the primary Super Admin.');
         }
-        User::findOrFail($id)->delete();
+        User::findOrFail($dec_id)->delete();
         return back()->with('flash_success', 'User deleted successfully.');
     }
 
     public function resetPassword($id)
     {
-        $user = User::findOrFail($id);
+        $dec_id = Qs::decodeHash($id) ?: $id;
+        $user = User::findOrFail($dec_id);
         $user->update(['password' => Hash::make('password')]);
         return back()->with('flash_success', 'Password reset to "password" successfully.');
     }
