@@ -112,34 +112,84 @@
             line-height: 1.5;
         }
 
-        /* Role chips */
-        .role-strip {
-            display: flex;
-            gap: 7px;
-            flex-wrap: wrap;
-            margin-bottom: 28px;
+
+        /* ── Custom Role Dropdown ── */
+        .custom-select-wrap {
+            position: relative;
         }
-        .r-chip {
-            flex: 1;
-            min-width: 56px;
-            padding: 7px 8px;
-            border-radius: 99px;
+        .select-trigger {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0d1117;
             border: 1.5px solid #1f2937;
-            background: transparent;
-            color: #9ca3af;
-            font-size: 0.7rem;
+            border-radius: 9px;
+            padding: 11px 14px;
+            color: #e2e8f0;
+            font-size: 0.88rem;
             font-weight: 500;
             cursor: pointer;
-            text-align: center;
-            transition: all 0.2s ease;
+            text-align: left;
             font-family: 'Inter', sans-serif;
-            white-space: nowrap;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            gap: 8px;
         }
-        .r-chip:hover { border-color: #7c3aed; color: #c4b5fd; }
-        .r-chip.active {
-            background: #7c3aed;
+        .select-trigger:hover,
+        .custom-select-wrap.open .select-trigger {
             border-color: #7c3aed;
-            color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+        }
+        .select-trigger .role-icon { font-size: 1rem; }
+        .select-trigger .chevron {
+            flex-shrink: 0;
+            color: #6b7280;
+            transition: transform 0.2s;
+        }
+        .custom-select-wrap.open .chevron { transform: rotate(180deg); }
+
+        .select-list {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0; right: 0;
+            background: #0d1117;
+            border: 1.5px solid #1f2937;
+            border-radius: 10px;
+            list-style: none;
+            padding: 6px;
+            z-index: 100;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+            animation: dropIn 0.18s ease;
+        }
+        @keyframes dropIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .custom-select-wrap.open .select-list { display: block; }
+
+        .select-opt {
+            padding: 10px 12px;
+            border-radius: 7px;
+            font-size: 0.875rem;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .select-opt:hover { background: #1f2937; color: #e2e8f0; }
+        .select-opt.active {
+            background: rgba(124,58,237,0.2);
+            color: #c4b5fd;
+            font-weight: 600;
+        }
+        .select-opt.active::after {
+            content: '✓';
+            margin-left: auto;
+            color: #a855f7;
+            font-size: 0.85rem;
         }
 
         /* Input fields */
@@ -314,32 +364,33 @@
                     </div>
                 @endif
 
-                {{-- Role selector --}}
-                <div class="role-strip" id="roleStrip">
-                    <button type="button" class="r-chip active"
-                        data-role="student"
-                        data-l1="Welcome to"
-                        data-l2="Student portal">Student</button>
-                    <button type="button" class="r-chip"
-                        data-role="teacher"
-                        data-l1="Welcome to"
-                        data-l2="Teacher portal">Teacher</button>
-                    <button type="button" class="r-chip"
-                        data-role="parent"
-                        data-l1="Welcome to"
-                        data-l2="Parent portal">Parent</button>
-                    <button type="button" class="r-chip"
-                        data-role="admin"
-                        data-l1="Welcome to"
-                        data-l2="Admin portal">Admin</button>
-                    <button type="button" class="r-chip"
-                        data-role="superadmin"
-                        data-l1="Welcome to"
-                        data-l2="Super Admin portal">Super Admin</button>
-                </div>
-
                 <form method="POST" action="{{ route('login') }}" id="loginForm">
                     @csrf
+
+                    {{-- Hidden role field submitted with form --}}
+                    <input type="hidden" name="role" id="roleInput" value="student">
+
+                    {{-- Role dropdown --}}
+                    <div class="field" style="margin-bottom:26px;">
+                        <label class="field-lbl">Login As</label>
+                        <div class="custom-select-wrap" id="roleDropdown">
+                            <button type="button" class="select-trigger" id="selectTrigger" aria-haspopup="listbox" aria-expanded="false">
+                                <span id="selectedLabel">
+                                    <span class="role-icon">🎓</span> Student
+                                </span>
+                                <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </button>
+                            <ul class="select-list" id="selectList" role="listbox" aria-label="Select role">
+                                <li class="select-opt active" data-value="student"   data-l1="Welcome to" data-l2="Student portal"    data-icon="🎓">🎓 &nbsp;Student</li>
+                                <li class="select-opt"        data-value="teacher"   data-l1="Welcome to" data-l2="Teacher portal"    data-icon="📚">📚 &nbsp;Teacher</li>
+                                <li class="select-opt"        data-value="parent"    data-l1="Welcome to" data-l2="Parent portal"     data-icon="👨‍👩‍👧">👨‍👩‍👧 &nbsp;Parent</li>
+                                <li class="select-opt"        data-value="admin"     data-l1="Welcome to" data-l2="Admin portal"      data-icon="🛡️">🛡️ &nbsp;Admin</li>
+                                <li class="select-opt"        data-value="super_admin" data-l1="Welcome to" data-l2="Super Admin portal" data-icon="⚡">⚡ &nbsp;Super Admin</li>
+                            </ul>
+                        </div>
+                    </div>
 
                     <div class="field">
                         <label class="field-lbl">Username</label>
@@ -518,18 +569,51 @@
     </main>
 
     <script>
-        // ── Role chip switching ──
-        const chips     = document.querySelectorAll('.r-chip');
-        const wLine1    = document.getElementById('wLine1');
-        const wLine2    = document.getElementById('wLine2');
+        // ── Role Dropdown Logic ──
+        const trigger       = document.getElementById('selectTrigger');
+        const dropdown      = document.getElementById('roleDropdown');
+        const selectList    = document.getElementById('selectList');
+        const selectedLabel = document.getElementById('selectedLabel');
+        const roleInput     = document.getElementById('roleInput');
+        const wLine1        = document.getElementById('wLine1');
+        const wLine2        = document.getElementById('wLine2');
 
-        chips.forEach(chip => {
-            chip.addEventListener('click', () => {
-                chips.forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-                wLine1.textContent = chip.dataset.l1;
-                wLine2.textContent = chip.dataset.l2;
+        // Toggle open/close
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('open');
+            trigger.setAttribute('aria-expanded', dropdown.classList.contains('open'));
+        });
+
+        // Option selection
+        selectList.querySelectorAll('.select-opt').forEach(opt => {
+            opt.addEventListener('click', () => {
+                // Deactivate all
+                selectList.querySelectorAll('.select-opt').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+
+                // Update hidden input
+                roleInput.value = opt.dataset.value;
+
+                // Update trigger label
+                selectedLabel.innerHTML = `<span class="role-icon">${opt.dataset.icon}</span> ${opt.textContent.trim()}`;
+
+                // Update right-panel welcome text
+                wLine1.textContent = opt.dataset.l1;
+                wLine2.textContent = opt.dataset.l2;
+
+                // Close dropdown
+                dropdown.classList.remove('open');
+                trigger.setAttribute('aria-expanded', 'false');
             });
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('open');
+                trigger.setAttribute('aria-expanded', 'false');
+            }
         });
 
         // ── Password toggle ──
