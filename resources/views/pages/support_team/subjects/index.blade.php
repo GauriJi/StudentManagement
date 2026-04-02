@@ -94,14 +94,14 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($subjects->where('my_class.id', $c->id) as $s)
+                            @foreach($subjects->where('my_class_id', $c->id) as $s)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $s->name }} </td>
                                     <td>{{ $s->subject_code }} </td>
                                     <td>{{ $s->slug }} </td>
-                                    <td>{{ $s->my_class->name }}</td>
-                                    <td>{{ $s->teacher->name }}</td>
+                                    <td>{{ $s->my_class ? $s->my_class->name : '-' }}</td>
+                                    <td>{{ $s->teacher ? $s->teacher->name : '-' }}</td>
                                     <td class="text-center">
                                         <div class="list-icons">
                                             <div class="dropdown">

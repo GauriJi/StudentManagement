@@ -96,12 +96,6 @@
     </a>
 </li>
 
-{{-- Teachers --}}
-<li class="nav-item">
-    <a href="{{ route('users.index') }}" class="nav-link {{ Route::is('users.*') ? 'active' : '' }}">
-        <i class="icon-users4"></i><span>Teachers & Users</span>
-    </a>
-</li>
 
 {{-- Exams & Results --}}
 <li class="nav-item">
