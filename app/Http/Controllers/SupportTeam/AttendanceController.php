@@ -47,8 +47,9 @@ class AttendanceController extends Controller
 
         // Fetch existing attendance if any
         $attendances = Attendance::where('my_class_id', $class_id)->where('date', $date)->get()->keyBy('student_id');
+        $all_attendances = Attendance::where('my_class_id', $class_id)->get()->groupBy('student_id');
 
-        return view('pages.support_team.attendance.manage', compact('my_class', 'students', 'date', 'attendances'));
+        return view('pages.support_team.attendance.manage', compact('my_class', 'students', 'date', 'attendances', 'all_attendances'));
     }
 
     public function store(Request $request)
@@ -57,10 +58,14 @@ class AttendanceController extends Controller
         $date = $request->date;
         $status = $request->status; // array of student_id => status
 
+        if (!Qs::userIsTeacher()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $my_class = MyClass::findOrFail($class_id);
 
-        if (Qs::userIsTeacher() && $my_class->teacher_id !== Auth::user()->id) {
-            abort(403);
+        if ($my_class->teacher_id !== Auth::user()->id) {
+            abort(403, 'Unauthorized action.');
         }
 
         if ($status) {

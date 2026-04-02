@@ -28,6 +28,8 @@
 .status-absent { border-color: #dc3545; color: #dc3545; }
 .status-late { border-color: #ffc107; color: #ffc107; text-shadow: none; }
 
+.status-radio:disabled + .status-btn { cursor: not-allowed; opacity: 0.6; }
+
 .attendance-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
 </style>
 
@@ -38,16 +40,23 @@
         </div>
 
         <div class="card-body bg-light pt-4">
+            @if(Qs::userIsTeacher())
             <form method="post" action="{{ route('attendance.store') }}">
                 @csrf
                 <input type="hidden" name="my_class_id" value="{{ $my_class->id }}">
                 <input type="hidden" name="date" value="{{ $date }}">
+            @endif
                 
                 <div class="row">
                     @foreach($students as $s)
                         @php
                             $st = isset($attendances[$s->user_id]) ? $attendances[$s->user_id]->status : 'present';
                             $borderClass = $st == 'present' ? 'border-success' : ($st == 'absent' ? 'border-danger' : 'border-warning');
+
+                            $student_attendance = isset($all_attendances[$s->user_id]) ? $all_attendances[$s->user_id] : collect();
+                            $total_days = $student_attendance->count();
+                            $present_days = $student_attendance->where('status', 'present')->count();
+                            $attendance_perc = $total_days > 0 ? round(($present_days / $total_days) * 100) : 0;
                         @endphp
                         
                         <div class="col-md-6 col-lg-4 mb-3">
@@ -60,6 +69,7 @@
                                         </div>
                                     </div>
                                     
+                                    @if(Qs::userIsTeacher())
                                     <div class="d-flex justify-content-between mt-auto bg-white p-2 border rounded" style="background:#fcfcfc;">
                                         <label class="mb-0">
                                             <input type="radio" name="status[{{ $s->user_id }}]" value="present" class="status-radio" {{ $st == 'present' ? 'checked' : '' }} onclick="updateCard('{{$s->user_id}}', 'success')">
@@ -74,17 +84,31 @@
                                             <span class="status-btn status-absent">Absent</span>
                                         </label>
                                     </div>
+                                    @else
+                                    <div class="mt-auto bg-white p-2 border rounded" style="background:#fcfcfc;">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span class="text-muted font-weight-bold" style="font-size: 0.85rem;">Total Attendance:</span>
+                                            <span class="font-weight-bold {{ $attendance_perc >= 75 ? 'text-success' : ($attendance_perc >= 50 ? 'text-warning' : 'text-danger') }}">{{ $attendance_perc }}%</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="text-muted font-weight-bold" style="font-size: 0.85rem;">Today's Status:</span>
+                                            <span class="font-weight-bold text-uppercase badge {{ $st == 'present' ? 'badge-success' : ($st == 'absent' ? 'badge-danger' : 'badge-warning') }}">{{ $st }}</span>
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     @endforeach
                 </div>
                 
+                @if(Qs::userIsTeacher())
                 <hr>
                 <div class="text-right mt-3">
                     <button type="submit" class="btn btn-success btn-lg shadow-sm px-4 rounded-pill"><b><i class="icon-checkmark4 mr-2"></i></b> Save Attendance</button>
                 </div>
             </form>
+            @endif
         </div>
     </div>
 

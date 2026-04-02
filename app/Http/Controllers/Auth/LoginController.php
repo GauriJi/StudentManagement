@@ -41,6 +41,16 @@ class LoginController extends Controller
         'super_admin'=> ['super_admin'],
     ];
 
+    /**
+     * Friendly portal labels for error messages.
+     */
+    protected $roleLabels = [
+        'student'    => 'Student',
+        'teacher'    => 'Teacher',
+        'parent'     => 'Parent',
+        'admin'      => 'Admin',
+        'super_admin'=> 'Super Admin',
+    ];
 
     /**
      * Create a new controller instance.
@@ -78,6 +88,8 @@ class LoginController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
+            $selectedLabel = $this->roleLabels[$selectedRole] ?? ucfirst($selectedRole);
+            $actualLabel   = ucwords(str_replace('_', ' ', $user->user_type));
 
             return redirect()->route('login')
                 ->withInput($request->only('identity'))
